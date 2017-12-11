@@ -34,7 +34,7 @@ app.use(function (req, res, next) {
 var port = process.env.PORT || 3003;
 app.set('port', port);
 
-app.locals.name = 'ProtectMyChild';
+app.locals.name = 'Shieldren';
 
 process.on("uncaughtException", function (err) {
   console.log({data: 'uncaughtException', error: err.stack});
