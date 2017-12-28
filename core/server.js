@@ -56,7 +56,8 @@ app.get('/privacy',function(req, res, next){
 });
 
 app.get('/*', function (req, res) {
-  res.send(app.locals.name);
+  // res.send(app.locals.name);
+    res.sendFile('404page.html', { root: path.join(__dirname, '../public') });
 });
 
 process.on('SIGTERM', function () {
