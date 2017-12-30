@@ -5,7 +5,8 @@ var bodyParser = require('body-parser');
 var fs = require("fs-extra");
 var cors = require('cors');
 var connect = require("connect");
-var morgan = require('morgan')
+var morgan = require('morgan');
+const { exec } = require('child_process');
 
 morgan(function (tokens, req, res) {
   return [
@@ -54,6 +55,19 @@ app.get('/', function (req, res, next) {
 app.get('/privacy',function(req, res, next){
   res.sendFile('privacypolicy.html', { root: path.join(__dirname, '../public') });
 });
+
+app.get('/newconnection', function(req, res) {
+    exec('python ./ConnectWhatsApp.py', (error, stdout, stderr) => {
+        if (error) {
+            res.writeHead(500, {'Content-Type': 'text/plain' });
+        }
+        if (stdout) {
+            res.writeHead(200, {'Content-Type': 'text/plain' });
+            res.end(stdout);
+        }
+    });
+});
+
 
 app.get('/*', function (req, res) {
   // res.send(app.locals.name);
