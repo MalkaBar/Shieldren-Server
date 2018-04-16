@@ -42,10 +42,11 @@ module.exports = {
             if (result.length != 1) { return callback(null, -1); }
             
             var hash = crypto.createHash('sha256');
-            hash.update(password + result[0].salt);
-            var userPassword = hash.digest('hex');
+            hash.update(result[0].salt + password);
+            password = hash.digest('hex');
 
-            if (userPassword === password) return callback(null,result[0].uid);
+            console.log('\033[0;33m[SERVER]\033[0m LOGIN: compare [' + result[0].password + '] with [' + password + ']');
+            if (result[0].password == password) return callback(null,result[0].id);
             else return callback(null, -1);
         });
 
