@@ -30,7 +30,24 @@ module.exports = {
             }
         );
     },
+    //callback(err, uid)
     get: (email, password, callback) => {
+
+        if (!email)     return callback(new Error('ERR_INVALID_INPUT'), -1);
+        if (!password)  return callback(new Error('ERR_INVALID_INPUT'), -1);
+
+        db.run("SELECT * FROM [shieldren].[users] WHERE email = '" + email +"';",
+        (err, result) => {
+            if (err) return callback(err, result);
+            if (result.length != 1) { return callback(null, -1); }
+            
+            var hash = crypto.createHash('sha256');
+            hash.update(password + result[0].salt);
+            var userPassword = hash.digest('hex');
+
+            if (userPassword === password) return callback(null,result[0].uid);
+            else return callback(null, -1);
+        });
 
     }
     

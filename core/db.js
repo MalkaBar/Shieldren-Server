@@ -1,5 +1,5 @@
-const Connection    = require('tedious').Connection;
-const Request       = require('tedious').Request;
+const Connection              = require('tedious').Connection;
+const Request                 = require('tedious').Request;
 const { dbConfig, SQLDebug }  = require('../configuration');
 
 var connection = new Connection(dbConfig);
@@ -28,7 +28,6 @@ module.exports = {
         console.log('\033[0;33m[SQL SERVER] COMMAND\033[0m: ' + command);
 
         var result = [];
-        var pass = false;
 
         request = new Request(command, (err, value) => {
             if (err) return callback(err,null);
