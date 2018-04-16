@@ -15,7 +15,7 @@ if (cluster.isMaster && isProd) { // cluster.isWorker
         cluster.fork(workerInfo);
     }
 } else if (isProd){
-    console.log('cluster id:',cluster.worker.id,'process id:',process.pid);
+    console.log('\033[0;32m[SERVER]\033[0m cluster id:',cluster.worker.id,'process id:',process.pid);
     startServer(cluster.worker.id);
 } else {
     startServer();
@@ -23,8 +23,8 @@ if (cluster.isMaster && isProd) { // cluster.isWorker
 
 //cluster.workers[id].process.pid
 cluster.on('exit', function (worker) {
-    console.log('cluster ' + worker.id + ' died :(');
-    console.log('Starting a new cluster...');
+    console.log('\033[0;32m[SERVER]\033[0m cluster ' + worker.id + ' died :(');
+    console.log('\033[0;32m[SERVER]\033[0m Starting a new cluster...');
     var workerInfo = worker.process.workerInfo;
     var newWorker = cluster.fork(workerInfo);
     newWorker.process.workerInfo = workerInfo;

@@ -1,23 +1,40 @@
 {
   "name": "shieldren",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Omer Avrech",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.18.2",
     "child_process": "^1.0.2",
-    "connect": "^3.6.3",
+    "cluster": "^0.7.7",
+    "connect": "^3.6.6",
+    "cookie-parser": "^1.4.3",
     "cores": "^0.8.5",
     "cors": "^2.8.4",
-    "express": "^4.15.4",
+    "crypto": "^1.0.1",
+    "ejs": "^2.5.8",
+    "express": "^4.16.3",
     "fs-extra": "^4.0.1",
-    "morgan": "^1.8.2",
-    "path": "^0.12.7"
-  }
+    "morgan": "^1.9.0",
+    "path": "^0.12.7",
+    "sequelize": "^4.37.6",
+    "tedious": "^2.6.2",
+    "uniqid": "^4.1.1",
+    "validator": "^9.4.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MalkaBar/Shieldren-Server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MalkaBar/Shieldren-Server/issues"
+  },
+  "homepage": "https://github.com/MalkaBar/Shieldren-Server#readme",
+  "description": ""
 }
