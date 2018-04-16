@@ -6,16 +6,9 @@ module.exports = {
         password: 'shield@2018',
         options: {
             database: 'shieldren',
-            encrypt: false,
-            debug: {
-                packet: false,
-                data: false,
-                payload: false,
-                token: false,
-                log: true
-              }
+            encrypt: false
         }
     },
     Port: 3333,
-    debug: true
+    SQLDebug: false
 };

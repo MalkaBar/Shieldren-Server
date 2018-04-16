@@ -1,6 +1,6 @@
 const Connection    = require('tedious').Connection;
 const Request       = require('tedious').Request;
-const { dbConfig, debug }  = require('../configuration');
+const { dbConfig, SQLDebug }  = require('../configuration');
 
 var connection = new Connection(dbConfig);
 
@@ -12,13 +12,13 @@ connection.on('connect', (err) => {
     }
 });
 connection.on('debug', function(text) {
-    if (debug) console.log('\033[0;35m[SQL DEBUG]\033[0m' + text);
+    if (SQLDebug) console.log('\033[0;35m[SQL DEBUG]\033[0m' + text);
 });
 connection.on('errorMessage', (err) => {
-    if (debug) console.log('\031[0;31m[SQL ERROR]\033[0m' + JSON.stringify(err));
+    if (SQLDebug) console.log('\031[0;31m[SQL ERROR]\033[0m' + JSON.stringify(err));
 });
 connection.on('infoMessage', (err) => {
-    if (debug) console.log('\036[0;34m[SQL INFO]\033[0m' + JSON.stringify(err));
+    if (SQLDebug) console.log('\036[0;34m[SQL INFO]\033[0m' + JSON.stringify(err));
 });
 module.exports = {
     run: (command, callback) => {
@@ -30,13 +30,10 @@ module.exports = {
         var result = [];
         var pass = false;
 
-        request = new Request(command);
-
-        request.on ('doneProc', (rowCount, more, returnStatus) => {
-            if (returnStatus == 2627) { return callback(new Error('DUPLICATE KEY')); }
-            else { return callback(null, result); }
+        request = new Request(command, (err, value) => {
+            if (err) return callback(err,null);
+            else { return callback(null, result) }
         });
-
         request.on('row', (columns) => {
             var row = {};
             columns.forEach((column) => {
@@ -44,9 +41,7 @@ module.exports = {
             });
             result.push(row);
         });
-        request.on('error', (err) => {
-            return callback(err, null);
-        });
+       
         connection.execSql(request);
     }
 };
