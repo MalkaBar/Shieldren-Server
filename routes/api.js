@@ -4,25 +4,24 @@ var userController      = require('../controllers/user');
 var validator           = require('validator');
 var router              = express.Router();
 
-/*---------------------------------------------------------
-    Register new user
 
-    Method: Post
-
-    Send arguments:
-        email - string
-        first - string (given name)
-        last - string (family name)
-        password - string
-
-    Callbacks (codes):
-        200 - OK
-        500 - INTERNAL ERROR
-        1001 - ERR_INVALID_INPUT
-        2627 - ERR_ALREADY_EXIST
----------------------------------------------------------*/
+///---------------------------------------------------------
+///  Register new user
+///
+///  Method: Post
+///
+///  Send arguments:
+///      email - string
+///      first - string (given name)
+///      last - string (family name)
+///      password - sha256(string)
+///
+///  Callbacks (codes):
+///      200 - OK
+///      400 - USER ERRORS
+///      500 - INTERNAL ERROR
+///-----------------------------------------------------------
 router.post('/register', function (req, res, next) {
-
     try { 
         //  Check if all required arguments are sent
         if (!req.body.email)    throw Error('ERR_INVALID_INPUT');
@@ -34,6 +33,7 @@ router.post('/register', function (req, res, next) {
         if (!validator.isEmail(req.body.email))                         throw new Error('ERR_INVAILD_EMAIL');
         if (!validator.isByteLength(req.body.first, {min: 2, max: 30})) throw new Error('ERR_INVALID_FIRST');
         if (!validator.isByteLength(req.body.last, {min: 2, max: 30}))  throw new Error('ERR_INVALID_LAST');
+        if (!validator.isHash(req.body.password), 'sha256')             throw new Error('ERR_PASSWROD_FORMAT');
 
         //  Try to insert new user
         userController.put({
@@ -44,19 +44,35 @@ router.post('/register', function (req, res, next) {
         }, (err, count, rows) => {
             if (err) {
                 console.log('\033[0;31m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE NOT BEEN ADDED [' + err + ']');
-                res.status(500).send(err.message);
+                res.status(500).json({'reason': err.message});
              }
             else {
                 console.log('\033[0;32m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE BEEN ADDED');
-                res.send('SUCCESS');
+                res.status(200).json({'reason': 'SUCCESS'});
             }
         });
     } catch(err) {
         console.log('\033[0;31m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE NOT BEEN ADDED [' + err + ']');
-        res.status(400).send(err.message);
+        res.status(400).json({'reason': err.message});
     }
 });
 
+
+///---------------------------------------------------------
+///   Login user
+///
+///  Method: Post
+///
+///  Send arguments:
+///      email - string
+///      password - sha256(string)
+///
+///  Callbacks (codes):
+///      200 - OK
+///      400 - USER ERRORS
+///      403 - FORBIDDEN LOGIN
+///      500 - INTERNAL ERROR
+///---------------------------------------------------------
 router.post('/login', function (req, res, next) {
     try {
         //  Check if all required arguments are sent
@@ -64,7 +80,8 @@ router.post('/login', function (req, res, next) {
         if (!req.body.password) throw Error('ERR_INVALID_INPUT');
 
         //  Check if all arguments are valids
-        if (!validator.isEmail(req.body.email)) throw new Error('ERR_INVAILD_EMAIL');
+        if (!validator.isEmail(req.body.email))             throw new Error('ERR_INVAILD_EMAIL');
+        if (!validator.isHash(req.body.password), 'sha256') throw new Error('ERR_PASSWROD_FORMAT');
 
         var email    = validator.escape(req.body.email);
         var password = validator.escape(req.body.password);
@@ -73,7 +90,7 @@ router.post('/login', function (req, res, next) {
         userController.get(email, password, (err, uid) => {
             if (err) {
                 console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
-                res.status(500).send(err.message);
+                res.sendStatus(403);
             } else {
                 if (uid > 0) { res.status(200).json({'uid': uid}); }
                 else { res.sendStatus(403); }
@@ -81,7 +98,28 @@ router.post('/login', function (req, res, next) {
         });
     } catch (err) {
         console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
-        res.status(400).send(err.message);
+        res.status(400).json({'reason': err.message});
     }
 });
+
+
+///---------------------------------------------------------
+///   child
+///
+///  Method: Get
+///
+///  Send arguments:
+///      none
+///
+///  Callbacks (codes):
+///      200 - OK
+///      400 - USER ERRORS
+///      500 - INTERNAL ERROR
+///---------------------------------------------------------
+router.get('/child/:uid', function (req, res, next) {
+    uid = req.params.uid;
+    res.send(uid);
+});
+
+
 module.exports  = router;
