@@ -14,6 +14,7 @@ morgan(function (tokens, req, res) {
 
 var app  = express();
 var http = require('http').Server(app);
+app.locals.loginUsers = {};
 
 app.use(morgan('combined'));
 app.use(cors({origin:true,credentials:true}));

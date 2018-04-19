@@ -10,5 +10,5 @@ module.exports = {
         }
     },
     Port: 3333,
-    SQLDebug: false
+    SQLDebug: true
 };

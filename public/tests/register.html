@@ -3,14 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Test</title>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://www.bichlmeier.info/sha256.js"></script>
+    <script>
+        function encryptPassword() {
+            var password = $('#password').val();
+            password = sha256_digest(password);
+            $('#password').val(password);
+        }
+    </script>
 </head>
 <body>
     <form method="post" action="/api/register">
         Email: <input type="textbox" name="email"> <br>
         Given Name: <input type="textbox" name="first"> <br>
         Family name: <input type="textbox" name="last"> <br>
-        Password: <input type="textbox" name="password"> <br>
-        <input type="submit" value="Submit">
+        Password: <input type="password" name="password" id='password'> <br>
+        <input type="submit" value="Submit" onclick="encryptPassword()">
     </form>
 </body>
 </html>
