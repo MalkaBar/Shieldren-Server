@@ -2,16 +2,16 @@ var db = require('../core/db');
 
 module.exports = {
     get: (pid, callback) => {
-        if (!child.pid)    return callback(new Error('ERR_INVALID_INPUT'), null);
+        if (!pid)    return callback(new Error('ERR_INVALID_INPUT'), null);
 
-        dn.run("SELECT * FROM shiledren.children", (err, result) => { callback(err, result); } );
+        db.run("SELECT * FROM [shieldren].[children] WHERE parentid='" + pid + "';", (err, result) => { callback(err, result); } );
         
     },
     put: (child, callback) => {
-        if (!child.pid)    return callback(new Error('ERR_INVALID_INPUT'), null);
+        if (!child.pid)   return callback(new Error('ERR_INVALID_INPUT'), null);
         if (!child.phone) return callback(new Error('ERR_INVALID_INPUT'), null);
-        if (!child.name)   return callback(new Error('ERR_INVALID_INPUT'), null);
-        if (!child.year)    return callback(new Error('ERR_INVALID_INPUT'), null);
+        if (!child.name)  return callback(new Error('ERR_INVALID_INPUT'), null);
+        if (!child.year)  return callback(new Error('ERR_INVALID_INPUT'), null);
 
         db.run("INSERT INTO [shieldren].[children] VALUES (" +
                 "NEXT VALUE FOR shieldren.idSeq, '" + 

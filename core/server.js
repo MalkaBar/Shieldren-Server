@@ -30,8 +30,9 @@ app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
 //  Routes
-app.use('/',    require('../routes/public'));
-app.use('/api', require('../routes/api'));
+app.use('/api/child', require('../routes/child'));
+app.use('/api',       require('../routes/api'));
+app.use('/',          require('../routes/public'));
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
