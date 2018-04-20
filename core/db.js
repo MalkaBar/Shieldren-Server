@@ -15,11 +15,18 @@ connection.on('debug', function(text) {
     if (SQLDebug) console.log('\033[0;35m[SQL DEBUG]\033[0m' + text);
 });
 connection.on('errorMessage', (err) => {
-    if (SQLDebug) console.log('\031[0;31m[SQL ERROR]\033[0m' + JSON.stringify(err));
+    if (SQLDebug) console.log('\033[0;31m[SQL ERROR]\033[0m' + JSON.stringify(err));
 });
 connection.on('infoMessage', (err) => {
-    if (SQLDebug) console.log('\036[0;34m[SQL INFO]\033[0m' + JSON.stringify(err));
+    if (SQLDebug) console.log('\033[0;36m[SQL INFO]\033[0m' + JSON.stringify(err));
 });
+connection.on('end', () => {
+    console.log('\033[0;31m[SQL CLOSE]\033[0m Connection have been close');
+    connection.reset(() => {
+        console.log('\033[0;31m[SQL RESET]\033[0m Restart Connection');
+    });
+});
+
 module.exports = {
     run: (command, callback) => {
         if (!command)
