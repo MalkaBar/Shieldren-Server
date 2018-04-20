@@ -13,10 +13,9 @@ var router              = express.Router();
 ///     none
 ///
 ///  Callbacks (codes):
-///     200 - OK
+///     200 - JSON with all children
 ///     400 - INPUT ERRORS
 ///     403 - NOT LOGIN
-///     409 - CHILD ALREADY EXIST
 ///     500 - INTERNAL ERROR
 ///---------------------------------------------------------
 

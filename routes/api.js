@@ -40,7 +40,7 @@ router.post('/register', function (req, res, next) {
             first:      validator.escape(req.body.first),
             last:       validator.escape(req.body.last),
             password:   req.body.password
-        }, (err, count, rows) => {
+        }, (err, data) => {
             if (err) {
                 console.log('\033[0;31m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE NOT BEEN ADDED [' + err + ']');
                 if (err.message === 'ERR_USER_EXIST') { res.status(409).json({'reason': err.message}) }
@@ -48,7 +48,10 @@ router.post('/register', function (req, res, next) {
              }
             else {
                 console.log('\033[0;32m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE BEEN ADDED');
-                res.status(200).json({'reason': 'SUCCESS'});
+                var uid = data[0].id;
+                var date = new Date();
+                req.app.locals.loginUsers[uid] = date.setTime(date.getTime() + 1);
+                res.status(200).json({'uid': uid });
             }
         });
     } catch(err) {
