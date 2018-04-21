@@ -61,21 +61,23 @@ router.get('/:pid',function(req, res, next){
 router.post('/:pid', function (req, res, next) {
     if (!req.app.locals.loginUsers[req.params.pid]) { return res.sendStatus(401); }
         try {
-            if (!req.body.phoneNumber)  throw new Error('ERR_INVALID_INPUT');
-            if (!req.body.childName)    throw new Error('ERR_INVALID_INPUT');
-            if (!req.body.birthdayYear) throw new Error('ERR_INVALID_INPUT');
+            if (!req.body.phoneNumber)  throw new Error('ERR_MISSING_PHONE');
+            if (!req.body.childName)    throw new Error('ERR_MISSING_NAME');
+            if (!req.body.birthdayYear) throw new Error('ERR_MISSING_YEAR');
 
-            if (!validator.isNumeric(req.body.phoneNumber))                   throw new Error('ERR_INVAILD_PHONE');
-            if (!validator.isLength(req.body.childName, {min: 2, max: 50}))   throw new Error('ERR_INVALID_NAME');
-            if (!validator.isNumeric(req.body.birthdayYear))                  throw new Error('ERR_INVALID_YEAR');
-            if (parseInt(req.body.birthdayYear) > (new Date()).getFullYear()) throw new Error('ERR_INVALID_YEAR');
-            if (parseInt(req.body.birthdayYear) < 2000)                       throw new Error('ERR_INVALID_YEAR');
+            var year;
+            try { year = parseInt(req.body.birthdayYear); }
+            catch (err) { year = req.body.birthdayYear; };
+
+            if (!validator.isNumeric(req.body.phoneNumber))                 throw new Error('ERR_INVAILD_PHONE');
+            if (!validator.isLength(req.body.childName, {min: 2, max: 50})) throw new Error('ERR_INVALID_NAME');
+            if (year > (new Date()).getFullYear() || year < 2000)           throw new Error('ERR_INVALID_YEAR');
 
             var child = {
-                pid: parseInt(req.params.pid),
-                phone: validator.escape(req.body.phoneNumber),
-                name: validator.escape(req.body.childName),
-                year: parseInt(req.body.birthdayYear)
+                'pid': parseInt(req.params.pid),
+                'phone': validator.escape(req.body.phoneNumber),
+                'name': validator.escape(req.body.childName),
+                'year': parseInt(req.body.birthdayYear)
             }
             childController.put(child, (err, result) => {
                 if (err)
