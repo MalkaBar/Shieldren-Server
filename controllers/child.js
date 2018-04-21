@@ -14,17 +14,14 @@ module.exports = {
         if (!child.year)  return callback(new Error('ERR_INVALID_INPUT'), null);
 
         db.run("INSERT INTO [shieldren].[children] VALUES (" +
-                "NEXT VALUE FOR shieldren.idSeq, '" + child.pid + "', '" + child.name + "', '" + child.phone + "', '" + child.year + "', 0, 0); " +
-                 "SELECT childid FROM [shieldren].[children] WHER parentid = " + child.pid + " AND child.name = '" + child.name + "';",
+               "NEXT VALUE FOR shieldren.idSeq, '" + child.pid + "', '" + child.name + "', '" + child.phone + "', '" + child.year + "', 0, 0); " +
+               "SELECT childid FROM [shieldren].[children] WHERE parentid = " + child.pid + " AND displayName = '" + child.name + "';",
             (err, result) => {
                 if (err) {
                     if (err.number == 2627) { return callback(new Error('ERR_CHILD_EXIST'), null); }
-                    else {
-                        return callback(err, result);
-                    }
-                } else {
                     return callback(err, result);
                 }
+                return callback(err, result);
             }
         );
     },

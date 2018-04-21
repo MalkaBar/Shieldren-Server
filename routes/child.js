@@ -59,8 +59,7 @@ router.get('/:pid',function(req, res, next){
 ///     500 - INTERNAL ERROR
 ///---------------------------------------------------------
 router.post('/:pid', function (req, res, next) {
-    if (!req.app.locals.loginUsers[req.params.pid]) { res.sendStatus(401); }
-    else {
+    if (!req.app.locals.loginUsers[req.params.pid]) { return res.sendStatus(401); }
         try {
             if (!req.body.phoneNumber)  return new Error('ERR_INVALID_INPUT');
             if (!req.body.childName)    return new Error('ERR_INVALID_INPUT');
@@ -72,7 +71,7 @@ router.post('/:pid', function (req, res, next) {
             if (parseInt(req.body.birthdayYear) > (new Date()).getFullYear()) throw new Error('ERR_INVALID_YEAR');
             if (parseInt(req.body.birthdayYear) < 2000)                       throw new Error('ERR_INVALID_YEAR');
 
-            let child = {
+            var child = {
                 pid: parseInt(req.params.pid),
                 phone: validator.escape(req.body.phoneNumber),
                 name: validator.escape(req.body.childName),
@@ -82,18 +81,16 @@ router.post('/:pid', function (req, res, next) {
                 if (err)
                 {
                     console.log('\033[0;31m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE NOT BEEN ADDED [' + err + ']');
-                    if (err.message === 'ERR_USER_EXIST') { res.status(409).json({'reason': err.message}) }
-                    else { res.status(500).json({'reason': err.message}) } ;
-                } else {
-                    console.log('\033[0;32m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE BEEN ADDED');
-                    res.status(200).json(result[0]);
-                }
+                    if (err.message === 'ERR_USER_EXIST') { return res.status(409).json({'reason': err.message}) }
+                    else { return res.status(500).json({'reason': err.message}) } ;
+                } 
+                console.log('\033[0;32m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE BEEN ADDED');
+                return res.status(200).json(result[0]);
             });
         } catch (err) {
             console.log('\033[0;31m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE NOT BEEN ADDED [' + err + ']');
-            res.status(400).json({'reason': err.message});
+            return res.status(400).json({'reason': err.message});
         }
-    }
 });
 
 ///---------------------------------------------------------
