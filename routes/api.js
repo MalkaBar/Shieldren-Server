@@ -1,7 +1,8 @@
-var express             = require('express');
-var userController      = require('../controllers/user');
-var validator           = require('validator');
-var router              = express.Router();
+var express        = require('express');
+var userController = require('../controllers/user');
+var validator      = require('validator');
+var crypto         = require('crypto');
+var router         = express.Router();
 
 ///---------------------------------------------------------
 ///  Register new user
@@ -89,18 +90,39 @@ router.post('/login', function (req, res, next) {
         var password = validator.escape(req.body.password);
 
         //  Get user password and salt, and compare with the password given by the user
-        userController.get(email, password, (err, uid) => {
+        userController.getByEmail(email, (err, result) => {
+            //Get Error while pulling data - SQL server ERROR
             if (err) {
                 console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
-                res.sendStatus(403);
-            } else {
-                if (uid > 0) {
-                    var date = new Date();
-                    req.app.locals.loginUsers[uid] = date.setTime(date.getTime() + 1);
-                    res.status(200).json({'uid': uid});
-                }
-                else { res.sendStatus(403); }
+                return res.sendStatus(400);
             }
+
+            //Get wrong answer from SQL
+            if (result.length != 1) {
+                console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [ERR_WRONG_QUERY]');
+                return res.sendStatus(403);
+            }
+
+            //process given password with salt
+            result = result[0];
+            var hash = crypto.createHash('sha256');
+            hash.update(result.salt + password);
+            password = hash.digest('hex');
+            console.log('\033[0;33m[SERVER]\033[0m LOGIN: compare [' + result.password + '] with [' + password + ']');
+
+            //CHECK IF PASSWORD IS WRONG
+            if (result.password !== password) {
+                console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
+                return res.sendStatus(403);
+            }
+
+            var date = new Date();
+            req.app.locals.loginUsers[result.id] = date.setTime(date.getTime() + 1);
+
+            delete result.password;
+            delete result.salt;
+
+            res.status(200).json(result);
         });
     } catch (err) {
         console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');

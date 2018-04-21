@@ -58,8 +58,8 @@ router.get('/:pid',function(req, res, next){
 ///     409 - CHILD ALREADY EXIST
 ///     500 - INTERNAL ERROR
 ///---------------------------------------------------------
-router.post('/:uid/insert', function (req, res, next) {
-    if (!req.app.locals.loginUsers[req.params.uid]) { res.sendStatus(401); }
+router.post('/:pid', function (req, res, next) {
+    if (!req.app.locals.loginUsers[req.params.pid]) { res.sendStatus(401); }
     else {
         try {
             if (!req.body.phoneNumber)  return new Error('ERR_INVALID_INPUT');
@@ -73,7 +73,7 @@ router.post('/:uid/insert', function (req, res, next) {
             if (parseInt(req.body.birthdayYear) < 2000)                       throw new Error('ERR_INVALID_YEAR');
 
             let child = {
-                pid: parseInt(req.params.uid),
+                pid: parseInt(req.params.pid),
                 phone: validator.escape(req.body.phoneNumber),
                 name: validator.escape(req.body.childName),
                 year: parseInt(req.body.birthdayYear)
@@ -112,25 +112,27 @@ router.post('/:uid/insert', function (req, res, next) {
 ///     500 - INTERNAL ERROR
 ///---------------------------------------------------------
 router.get('/:pid/:cid', function (req, res, next) {
-    if (!req.app.locals.loginUsers[req.params.pid]) { res.sendStatus(401); }
-    else {
-        try {
-            if (!validator.isNumeric(req.params.cid)) throw new Error('ERR_INVAILD_CID');
-
-            childController.getByChild(req.params.pid, req.params.cid, (err, result) => {
-                if (err) {
-                    console.log('\033[0;31m[SERVER]\033[0m CHILD: ' + req.params.cid + ' NOT EXIST [' + err + ']');
-                     res.status(500).json({'reason': err.message});
-                } else {
-                    console.log('\033[0;32m[SERVER]\033[0m CHILD: GET CHILED LIST FOR ' + req.params.cid);
-                    res.status(200).json(result[0]);
-                }
-            });
-        } catch (err) {
-            console.log('\033[0;31m[SERVER]\033[0m ERROR FIND CHILD ' + req.params.cid + ' [' + err + ']');
-            res.status(400).json({'reason': err.message});
-        }
+    if (!req.app.locals.loginUsers[req.params.pid]) { return res.sendStatus(401); }
+    try {
+        if (!validator.isNumeric(req.params.cid)) throw new Error('ERR_INVAILD_CID');
+        childController.getByChild(req.params.pid, req.params.cid, (err, result) => {
+            if (err) {
+                console.log('\033[0;31m[SERVER]\033[0m CHILD: ' + req.params.cid + ' NOT EXIST [' + err + ']');
+                return res.status(500).json({'reason': err.message});
+            }
+            console.log('\033[0;32m[SERVER]\033[0m CHILD: GET CHILED LIST FOR ' + req.params.cid);
+            return res.status(200).json(result[0]);
+        });
+    } catch (err) {
+        console.log('\033[0;31m[SERVER]\033[0m ERROR FIND CHILD ' + req.params.cid + ' [' + err + ']');
+        res.status(400).json({'reason': err.message});
     }
+});
+
+router.get('/:pid/:cid/scan', (req, res, next) => {
+    if (!req.app.locals.loginUsers[req.params.pid]) { return res.sendStatus(401); }
+
+    return res.sendStatus(200);
 });
 
 module.exports  = router;
