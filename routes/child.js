@@ -65,20 +65,18 @@ router.post('/:pid', function (req, res, next) {
             if (!req.body.childName)    throw new Error('ERR_MISSING_NAME');
             if (!req.body.birthdayYear) throw new Error('ERR_MISSING_YEAR');
 
-            var year;
-            try { year = parseInt(req.body.birthdayYear); }
-            catch (err) { year = req.body.birthdayYear; };
-
-            if (!validator.isNumeric(req.body.phoneNumber))                 throw new Error('ERR_INVAILD_PHONE');
-            if (!validator.isLength(req.body.childName, {min: 2, max: 50})) throw new Error('ERR_INVALID_NAME');
-            if (year > (new Date()).getFullYear() || year < 2000)           throw new Error('ERR_INVALID_YEAR');
-
             var child = {
-                'pid': parseInt(req.params.pid),
-                'phone': validator.escape(req.body.phoneNumber),
-                'name': validator.escape(req.body.childName),
-                'year': parseInt(req.body.birthdayYear)
+                'pid': req.params.pid,
+                'phone': req.body.phoneNumber.toString(),
+                'name': req.body.childName.toString(),
+                'year': Number(req.body.birthdayYear)
             }
+
+            if (!validator.isMobilePhone(child.phone, 'he-IL'))     throw new Error('ERR_INVAILD_PHONE');
+            if (!validator.isLength(child.name, {min: 2, max: 50})) throw new Error('ERR_INVALID_NAME');
+            if (child.year === 'NaN')                               throw new Error('ERR_INVALID_FORMAT');
+            if (year > (new Date()).getFullYear() || year < 2000)   throw new Error('ERR_INVALID_YEAR');
+            
             childController.put(child, (err, result) => {
                 if (err)
                 {
