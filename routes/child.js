@@ -75,13 +75,13 @@ router.post('/:pid', function (req, res, next) {
             if (!validator.isMobilePhone(child.phone, 'he-IL'))     throw new Error('ERR_INVAILD_PHONE');
             if (!validator.isLength(child.name, {min: 2, max: 50})) throw new Error('ERR_INVALID_NAME');
             if (child.year === 'NaN')                               throw new Error('ERR_INVALID_FORMAT');
-            if (year > (new Date()).getFullYear() || year < 2000)   throw new Error('ERR_INVALID_YEAR');
-            
+            if (child.year > (new Date()).getFullYear() || child.year < 2000)   throw new Error('ERR_INVALID_YEAR');
+
             childController.put(child, (err, result) => {
                 if (err)
                 {
                     console.log('\033[0;31m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE NOT BEEN ADDED [' + err + ']');
-                    if (err.message === 'ERR_USER_EXIST') { return res.status(409).json({'reason': err.message}) }
+                    if (err.message === 'ERR_CHILD_EXIST') { return res.status(409).json({'reason': err.message}) }
                     else { return res.status(500).json({'reason': err.message}) } ;
                 } 
                 console.log('\033[0;32m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE BEEN ADDED');
