@@ -126,10 +126,12 @@ router.get('/:pid/:cid', function (req, res, next) {
     }
 });
 
-router.get('/:pid/:cid/scan', (req, res, next) => {
-    if (!req.app.locals.loginUsers[req.params.pid]) { return res.sendStatus(401); }
+/*router.ws('/:pid/:cid/scan', (ws, req) => {
+    console.log('Connection been made.');
+    ws.on('HELO', (msg) => {
+        console.log(msg);
+    });
+});*/
 
-    return res.sendStatus(200);
-});
 
-module.exports  = router;
+module.exports = router;
