@@ -13,7 +13,7 @@
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            var socket = io.connect("ws://localhost:3333");
+            var socket = io.connect("ws://193.106.55.125");
             
             socket.on('response', (message) => {
                 if (message === 'connected') return socket.emit('request', 'qr');
