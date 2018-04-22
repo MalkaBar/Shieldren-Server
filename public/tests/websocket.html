@@ -1,25 +1,21 @@
 <!doctype html>  
 <html lang="en">  
     <head>
-
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <div id="future"></div>
-        <form id="form" id="chat_form">
-            <input id="chat_input" type="text">
-            <input type="submit" value="Send">
-        </form>
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             var socket = io.connect("ws://193.106.55.125");
             
             socket.on('response', (message) => {
-                if (message === 'connected') return socket.emit('request', 'qr');
-                $(chat_input).val(message);
-                socket.disconnect();
+                $('div').text('Server Response: ' + JSON.stringify(message) + '<br><br>');
+                if (request.message === 'connected') return socket.emit('request', 'qr');
+                if (request.message === 'qr') return socket.emit('request', 'update');
+                if (request.message === 'bye') return socket.disconnect();
             });
-        </script>     
+        </script>
+    </head>
+    <body>
+        <h1>Hello World!</h1>
+        <div id="future"></div>
     </body>
 </html> 
