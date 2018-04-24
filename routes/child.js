@@ -3,6 +3,7 @@ var express             = require('express');
 var childController     = require('../controllers/child');
 var validator           = require('validator');
 var router              = express.Router();
+var path                = require('path');
 
 ///---------------------------------------------------------
 ///   Child - Get all child for parent
@@ -126,12 +127,12 @@ router.get('/:pid/:cid', function (req, res, next) {
     }
 });
 
-/*router.ws('/:pid/:cid/scan', (ws, req) => {
-    console.log('Connection been made.');
-    ws.on('HELO', (msg) => {
-        console.log(msg);
-    });
-});*/
+router.get('/:pid/:cid/scan', (req, res, next) => {
+    if (!req.app.locals.loginUsers[req.params.pid]) { return res.sendStatus(401); }
 
+    var whatsapp = require('../core/whatsapp');
+    whatsapp.start(req.app.io);
+    res.sendFile('websocket.html', {root: path.join(__dirname, '../public/tests')});
+});
 
 module.exports = router;

@@ -4,18 +4,26 @@
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            var socket = io.connect("ws://193.106.55.125");
+            var socket = io.connect("ws://localhost:3333");
             
-            socket.on('response', (request) => {
-                $('div').append('Server Response: ' + JSON.stringify(request) + '<br><br>');
-                if (request.message === 'connected') return socket.emit('request', {'message': 'qr', 'value': '157'});
-                if (request.message === 'qr') return socket.emit('request', { 'message': 'update', 'value': null});
-                if (request.message === 'bye') return socket.disconnect();
+            var phone = '0586664440';
+
+            socket.on('response', (response) => {
+                $('div').append('Server Response: ' + JSON.stringify(response) + '<br><br>');
+                if (response.message === 'connected') return socket.emit('request', {'message': 'qr', 'value': phone});
+                if (response.message === 'qr')
+                {
+                    if (response.value === 'start') return;
+                    if (response.value === 'end') return socket.disconnect();
+                    if (response.value === 'failed') return socket.emit('request', {'message': 'qr', 'value': phone});
+                    if (response.value) {return; } //@TODO: here the QR is sent - display to user
+                }
             });
         </script>
     </head>
     <body>
         <h1>WebSocket Test</h1>
-        <div id="future"></div>
+        <div id="response_alerts"></div>
+        
     </body>
 </html> 
