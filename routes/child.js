@@ -129,10 +129,9 @@ router.get('/:pid/:cid', function (req, res, next) {
 
 router.get('/:pid/:cid/scan', (req, res, next) => {
     if (!req.app.locals.loginUsers[req.params.pid]) { return res.sendStatus(401); }
-
+    res.sendFile('websocket.html', {root: path.join(__dirname, '../public/tests')});
     var whatsapp = require('../core/whatsapp');
     whatsapp.start(req.app.io);
-    res.sendFile('websocket.html', {root: path.join(__dirname, '../public/tests')});
 });
 
 module.exports = router;
