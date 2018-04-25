@@ -26,7 +26,7 @@ module.exports = {
         _child.stdout.on('data', (data) => {
             if (bool) {
                 console.log('RETRIEVE DATA: ' + data);
-                //@TODO: send data to algo
+                algoController.save(data);
             } else {
                 if (data.toString().trim() == 'Scan Succeeded') {
                     bool = !bool;
