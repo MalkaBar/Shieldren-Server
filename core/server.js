@@ -59,7 +59,6 @@ io.sockets.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log("WS: client disconnected " + socket.client.id);
-    socket.disconnect(true);
   });
 });
 // WEB SOCKET END //*/

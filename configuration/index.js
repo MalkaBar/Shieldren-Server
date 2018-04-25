@@ -13,7 +13,6 @@ module.exports = {
         monitor: true
     },
     network: {
-        port: 3333,
-        ws: 3334
+        port: 80
     }
 };

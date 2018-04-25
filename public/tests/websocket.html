@@ -4,9 +4,9 @@
         <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            var socket = io.connect("ws://localhost:3333");
+            var socket = io.connect("ws://193.106.55.125");
             
-            var phone = '0586664440';
+            var phone = '0000000000';
 
             socket.on('response', (response) => {
                 $('div').append('Server Response: ' + JSON.stringify(response) + '<br><br>');

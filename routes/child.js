@@ -1,6 +1,6 @@
 
 var express             = require('express');
-var childController     = require('../controllers/child');
+var childController     = require('../controllers/childController');
 var validator           = require('validator');
 var router              = express.Router();
 var path                = require('path');

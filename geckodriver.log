@@ -1,0 +1,25 @@
+1524688763727	geckodriver	INFO	geckodriver 0.19.1
+1524688763747	geckodriver	INFO	Listening on 127.0.0.1:51192
+1524688765713	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-profile" "C:\\Users\\PROJEC~2\\AppData\\Local\\Temp\\2\\rust_mozprofile.IsF0dWJDtuEa"
+Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
+1524688766676	Marionette	INFO	Enabled via --marionette
+Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
+Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
+Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
+Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
+1524688769138	Marionette	INFO	Listening on port 51198
+1524688769430	Marionette	WARN	TLS certificate errors will be ignored for this session
+[Child 4436, MediaPlayback #2] WARNING: 2702e65be80 Can't get cubeb context!: file z:/build/build/src/dom/media/AudioStream.cpp, line 358
+[Child 4436, MediaPlayback #2] WARNING: Decoder=27032366c00 [OnMediaSinkAudioError]: file z:/build/build/src/dom/media/MediaDecoderStateMachine.cpp, line 3755
+[Child 4436, MediaPlayback #2] WARNING: Decoder=27032366c00 Decode error: NS_ERROR_DOM_MEDIA_MEDIASINK_ERR (0x806e000b) - OnMediaSinkAudioError: file z:/build/build/src/dom/media/MediaDecoderStateMachine.cpp, line 3453
+[Parent 1596, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 1596, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 1596, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 1596, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 1596, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 4436, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 4436, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromiu[Child 5352, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 5352, Chrome_Chil[Child 7780, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 7780, Chrome_ChildThread] WARNING[GPU 3812, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/s
+###!!! [Child][MessageChannel::SendAndWait] Error: Channel error: cannot send/recv
+
