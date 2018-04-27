@@ -1,20 +1,22 @@
-1524771611869	geckodriver	INFO	geckodriver 0.19.1
-1524771611888	geckodriver	INFO	Listening on 127.0.0.1:57735
-1524771613885	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-profile" "C:\\Users\\PROJEC~2\\AppData\\Local\\Temp\\2\\rust_mozprofile.OS5vW2LKPVXU"
+1524826048672	geckodriver	INFO	geckodriver 0.19.1
+1524826048690	geckodriver	INFO	Listening on 127.0.0.1:60396
+1524826050685	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "-marionette" "-profile" "C:\\Users\\PROJEC~2\\AppData\\Local\\Temp\\4\\rust_mozprofile.an8AK0A26P8j"
 Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
-1524771614950	Marionette	INFO	Enabled via --marionette
-Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
-Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
+1524826051766	Marionette	INFO	Enabled via --marionette
 Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
 Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
-1524771617644	Marionette	INFO	Listening on port 57741
-1524771618088	Marionette	WARN	TLS certificate errors will be ignored for this session
-[Child 10468, MediaPlayback #1] WARNING: 1769d5cde80 Can't get cubeb context!: file z:/build/build/src/dom/media/AudioStream.cpp, line 358
-[Child 10468, MediaPlayback #1] WARNING: Decoder=176a0c9e400 [OnMediaSinkAudioError]: file z:/build/build/src/dom/media/MediaDecoderStateMachine.cpp, line 3755
-[Child 10468, MediaPlayback #1] WARNING: Decoder=176a0c9e400 Decode error: NS_ERROR_DOM_MEDIA_MEDIASINK_ERR (0x806e000b) - OnMediaSinkAudioError: file z:/build/build/src/dom/media/MediaDecoderStateMachine.cpp, line 3453
-[Parent 8320, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
-rent 9596, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
-[Parent 9596, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
+Unable to read VR Path Registry from C:\Users\project25\AppData\Local\openvr\openvrpaths.vrpath
+1524826054164	Marionette	INFO	Listening on port 60402
+1524826054418	Marionette	WARN	TLS certificate errors will be ignored for this session
+[Parent 7808, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 7808, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 7808, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+iaSinkAudioError: file z:/build/build/src/dom/media/MediaDecoderStateMachine.cpp, line 3453
+teMachine.cpp, line 3755
+[Child 1032, MediaPlayback #4] WARNING: Decoder=1fb9e115800 Decode error: NS_ERROR_DOM_MEDIA_MEDIASINK_ERR (0x806e000b) - OnMediaSinkAudioError: file z:/build/build/src/dom/media/MediaDecoderStateMachine.cpp, line 3453
+[Parent 1952, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+e/common/ipc_channel_win.cc, line 346
 [Child 8260, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
 [Child 8260, Chrome_ChildThread] WARNING: pi[Parent 9596, Gecko_IOThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
 [Child 8680, Chrome_ChildThread] WARNING: pipe error: 109: file z:/build/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346

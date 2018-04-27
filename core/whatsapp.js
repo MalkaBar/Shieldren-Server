@@ -26,7 +26,8 @@ module.exports = {
         _child.stdout.on('data', (data) => {
             if (bool) {
                 console.log('RETRIEVE DATA: ' + data);
-                var str = '{"timestamp": "112498243", "caller": "0586664440", "callee": "0544665536", "message": "u\'\\u05d2\\u05e9\'", "group": true }';
+                var str = '{"timestamp": "2018-04-27 13:29:08", "caller": "0586664440", "callee": "0544665536", "message": "u\'\\u05d2\\u05e9\'", "group": true }';
+                
                 try { algoController.save(str, (err, data) => {
                     if (err) { console.log("Error while insert data to db."); }
                 }); }
