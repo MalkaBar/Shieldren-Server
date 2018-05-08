@@ -14,14 +14,14 @@ module.exports = {
 
         _child.on('error', (err) => {
             if (debug) console.log('EXEC ERROR: ' + err);
-            socket.emit('response',{'message': 'qr', 'value': 'error', 'data':  err.message});
+            socket.emit('response',{'event': 'qr', 'value': 'error', 'data':  err.message});
         });
         _child.on('exit', function(code, signal) {
             if (debug) {
                 if (signal) { console.log('EXEC EXIT: Code = ' + code + ' | Signal' + signal); }
                 else { console.log('EXEC EXIT: Code = ' + code); }
             }
-            socket.emit('response',{'message': 'qr', 'value': 'exit'});
+            socket.emit('response',{'event': 'qr', 'value': 'exit'});
         });
         _child.stdout.on('data', (data) => {
             if (bool) {
@@ -35,12 +35,12 @@ module.exports = {
             } else {
                 if (data.toString().trim() == 'Scan Succeeded') {
                     bool = !bool;
-                    socket.emit('response', {'message': 'qr', 'value': 'success'});
+                    socket.emit('response', {'event': 'qr', 'value': 'success'});
                     socket.disconnect(true);
                     if (debug) console.log("EXEC: Start writing to database");
                 } else {
                     if (debug) console.log('SEND QR: ' + data);
-                    socket.emit('response', {'message': 'qr', 'value': 'scan', 'data': data.toString()});
+                    socket.emit('response', {'event': 'qr', 'value': 'scan', 'data': data.toString()});
                 }
             }
         });

@@ -55,7 +55,7 @@ process.on("uncaughtException", function (err) {
 io.sockets.on('connection', (socket) => {
 
   console.log("WS: new client " + socket.client.id);
-  socket.emit('response', {'message': 'connected', 'value': null });
+  socket.emit('response', {'event': 'connected', 'value': null });
 
   socket.on('disconnect', () => {
     console.log("WS: client disconnected " + socket.client.id);
