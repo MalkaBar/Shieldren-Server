@@ -3,7 +3,7 @@ var path          = require('path');
 var bodyParser    = require('body-parser');
 var cors          = require('cors');
 var morgan        = require('morgan');
-var WhatsApp = require('./whatsapp');
+var WhatsApp      = require('./whatsapp');
 const { network } = require('../configuration');
 
 morgan(function (tokens, req, res) {
@@ -41,7 +41,6 @@ app.use(function (req, res, next) {
 });
 
 var io = require('socket.io')(http);
-app.io = io;
 var port = process.env.PORT || network.port;
 app.set('port', port);
 
@@ -53,17 +52,18 @@ process.on("uncaughtException", function (err) {
 });
 
 // WEB SOCKET SERVER
-io.sockets.on('connection', (socket) => {
+io.of('/scan').on('connection', (socket) => {
 
   console.log("WS: new client " + socket.client.id);
-  socket.emit('response', {'event': 'connected', 'value': null });
-  
-  let whatsapp = new WhatsApp(socket, '0000000000');
+  socket.emit('qrHello', 'Hello');
 
+  let whatsapp = new WhatsApp(socket, '0000000000');
   socket.on('disconnect', () => {
     console.log("WS: client disconnected " + socket.client.id);
   });
 });
+
+app.io = io;
 // WEB SOCKET END //*/
 
 
