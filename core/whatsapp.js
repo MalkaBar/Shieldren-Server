@@ -2,50 +2,41 @@ const { spawn }     = require('child_process');
 var algoController  = require('../controllers/algorithmControler');
 var debug           = require('../configuration').db.monitor;
 
-module.exports = {
-    start: (socket, phone) => {
-        var bool = false;
+module.exports = class WhatsApp {
+    constructor(socket, phone) {
+        this.uniuqeID = null;
+        this.socket = socket;
+        this.subproccess = spawn('python',["c:\\Omer\\Studies\\WebSocket\\script.py", phone], { detached: true });
+        this.subproccess.stdout.on('data', (data) => { this.dataReceived(data.toString()); });
+        this.subproccess.stderr.on('data', (data) => { console.log('ERR: ' + data); });
+        this.subproccess.on('exit', (data) => { console.log('Close connection for ' + this.uniuqeID); });
+    }
 
-        const _child = spawn('python',["c:\\Program Files (x86)\\WebWhatsAPI-master\\sample\\sample.py", phone], {
-            detached: true,
-        });
-
-        if (debug) console.log("Start python code");
-
-        _child.on('error', (err) => {
-            if (debug) console.log('EXEC ERROR: ' + err);
-            socket.emit('response',{'event': 'qr', 'value': 'error', 'data':  err.message});
-        });
-        _child.on('exit', function(code, signal) {
-            if (debug) {
-                if (signal) { console.log('EXEC EXIT: Code = ' + code + ' | Signal' + signal); }
-                else { console.log('EXEC EXIT: Code = ' + code); }
+    dataReceived(data) {
+        try {
+            data = JSON.parse(data);
+            switch (data.code) {
+                case 0:
+                    break;
+                case 1:             //Send QR to user
+                    this.socket.emit('qrArrived', data.data.toString());
+                    break;
+                case 2:             //Notify user about successful scan
+                    this.socket.emit('qrScanned', "");
+                    break;
+                case 3:
+                    algoController.save(data.data);
+                    break;
+                case 5:
+                    this.uniuqeID = data.seesionID;
+                    break;
+                default:
+                    throw newError();
             }
-            socket.emit('response',{'event': 'qr', 'value': 'exit'});
-        });
-        _child.stdout.on('data', (data) => {
-            if (bool) {
-                console.log('RETRIEVE DATA: ' + data);
-                var str = '{"timestamp": "2018-04-27 13:29:08", "caller": "0586664440", "callee": "0544665536", "message": "u\'\\u05d2\\u05e9\'", "group": true }';
-                
-                try { algoController.save(str, (err, data) => {
-                    if (err) { console.log("Error while insert data to db."); }
-                }); }
-                catch (err) { console.log("Error while parsing data."); }
-            } else {
-                if (data.toString().trim() == 'Scan Succeeded') {
-                    bool = !bool;
-                    socket.emit('response', {'event': 'qr', 'value': 'success'});
-                    socket.disconnect(true);
-                    if (debug) console.log("EXEC: Start writing to database");
-                } else {
-                    if (debug) console.log('SEND QR: ' + data);
-                    socket.emit('response', {'event': 'qr', 'value': 'scan', 'data': data.toString()});
-                }
-            }
-        });
-        _child.stderr.on('data', (data) => {
-            if (debug) console.log('EXEC: Exit with error');
-        });
+        }
+        catch (ex) {
+            this.socket.emit('ProcessError', 'Error received. close process.');
+            this.subproccess.kill();
+        }
     }
 };

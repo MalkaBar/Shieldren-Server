@@ -3,6 +3,7 @@ var path          = require('path');
 var bodyParser    = require('body-parser');
 var cors          = require('cors');
 var morgan        = require('morgan');
+var WhatsApp = require('./whatsapp');
 const { network } = require('../configuration');
 
 morgan(function (tokens, req, res) {
@@ -56,6 +57,8 @@ io.sockets.on('connection', (socket) => {
 
   console.log("WS: new client " + socket.client.id);
   socket.emit('response', {'event': 'connected', 'value': null });
+  
+  let whatsapp = new WhatsApp(socket, '0000000000');
 
   socket.on('disconnect', () => {
     console.log("WS: client disconnected " + socket.client.id);
