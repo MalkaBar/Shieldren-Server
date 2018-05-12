@@ -56,8 +56,16 @@ io.of('/scan').on('connection', (socket) => {
 
   console.log("WS: new client " + socket.client.id);
   socket.emit('qrHello', 'Hello');
+  socket.on('qrStart', (data) => {
+    if ((data.parent) && app.locals.loginUsers[data.parent])
+      if (data.phone)
+        new WhatsApp(socket, data.phone);
+      else
+        socket.emit('qrError', "Missing phone number");
+    else
+      socket.emit('qrError', 'Unauthorized');
+  })
 
-  let whatsapp = new WhatsApp(socket, '0000000000');
   socket.on('disconnect', () => {
     console.log("WS: client disconnected " + socket.client.id);
   });
