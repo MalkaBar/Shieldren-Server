@@ -45,7 +45,6 @@ var port = process.env.PORT || network.port;
 app.set('port', port);
 
 app.locals.name = 'Shieldren';
-app.locals.loginUsers = {};
 
 process.on("uncaughtException", function (err) {
   console.log({data: 'uncaughtException', error: err.stack});
@@ -57,7 +56,7 @@ io.of('/scan').on('connection', (socket) => {
   console.log("WS: new client " + socket.client.id);
   socket.emit('qrHello', 'Hello');
   socket.on('qrStart', (data) => {
-    if ((data.parent) && app.locals.loginUsers[data.parent])
+    if ((data.parent))
       if (data.phone)
         new WhatsApp(socket, data.phone);
       else

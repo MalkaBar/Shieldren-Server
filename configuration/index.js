@@ -14,5 +14,6 @@ module.exports = {
     },
     network: {
         port: 80
-    }
+    },
+    secret: 'Bar+Lihi+Roie+Omer+Lior'
 };

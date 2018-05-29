@@ -2,6 +2,7 @@ var express        = require('express');
 var userController = require('../controllers/userController');
 var validator      = require('validator');
 var crypto         = require('crypto');
+var jwt            = require('jsonwebtoken');
 var router         = express.Router();
 
 ///---------------------------------------------------------
@@ -49,10 +50,18 @@ router.post('/register', function (req, res, next) {
              }
             else {
                 console.log('\033[0;32m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE BEEN ADDED');
-                var uid = data[0].id;
+
+                let uid = data[0].id;
+                let token = jwt.sign({ id: uid }, require('../configuration').secret, {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+                res.status(200).json({'uid': uid,  'token': token});
+
+                /*
                 var date = new Date();
                 req.app.locals.loginUsers[uid] = date.setTime(date.getTime() + 1);
-                res.status(200).json({'uid': uid });
+                res.status(200).json({'auth': true, 'uid': uid,  'token': });
+                */
             }
         });
     } catch(err) {
@@ -115,14 +124,21 @@ router.post('/login', function (req, res, next) {
                 console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
                 return res.sendStatus(403);
             }
-
-            var date = new Date();
-            req.app.locals.loginUsers[result.id] = date.setTime(date.getTime() + 1);
-
             delete result.password;
             delete result.salt;
 
+            /*
+            var date = new Date();
+            req.app.locals.loginUsers[result.id] = date.setTime(date.getTime() + 1);
+
             res.status(200).json(result);
+            */
+
+           let token = jwt.sign({ id: result.id }, require('../configuration').secret, {
+               expiresIn: 86400 // expires in 24 hours
+           });
+           result.token = token;
+           res.status(200).json(result);
         });
     } catch (err) {
         console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
