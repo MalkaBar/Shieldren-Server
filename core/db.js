@@ -5,11 +5,8 @@ const { db }     = require('../configuration');
 var connection = new Connection(db.config);
 
 connection.on('connect', (err) => {
-    if (err) {
-        console.log('\033[0;31m[SQL SERVER]\033[0m Faile connection to server [' + db.config.server + ']\n');
-    } else {
-        console.log('\033[0;32m[SQL SERVER]\033[0m Open connection to server [' + db.config.server + ']\n'); 
-    }
+    if (err) { return console.log('\033[0;31m[SQL SERVER]\033[0m Faile connection to server [' + db.config.server + ']\n'); }
+    return console.log('\033[0;32m[SQL SERVER]\033[0m Open connection to server [' + db.config.server + ']\n'); 
 });
 connection.on('debug', function(text) {
     if (db.monitor) console.log('\033[0;35m[SQL DEBUG]\033[0m' + text);
@@ -26,6 +23,7 @@ connection.on('end', () => {
     setTimeout(() => {
         connection.reset(() => {
             console.log('\033[0;31m[SQL RESET]\033[0m Restart Connection');
+            connection = new Connection(db.config);
         });
     },60000);
 });
