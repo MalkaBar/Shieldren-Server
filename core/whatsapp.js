@@ -1,12 +1,13 @@
 const { spawn }     = require('child_process');
 var algoController  = require('../controllers/algorithmControler');
 var debug           = require('../configuration').db.monitor;
+var { Script }      = require('../configuration');
 
 module.exports = class WhatsApp {
     constructor(socket, phone) {
         this.uniuqeID = null;
         this.socket = socket;
-        this.subproccess = spawn('python',["C:\\Program Files (x86)\\WebWhatsAPI-master\\sample\\sample.py", phone], { detached: true });
+        this.subproccess = spawn(Script.executer, [Script.path, phone], { detached: true });
         this.subproccess.stdout.on('data', (data) => { this.dataReceived(data.toString()); });
         this.subproccess.stderr.on('data', (data) => { console.log('ERR: ' + data); });
         this.subproccess.on('exit', (data) => { console.log('Close connection for ' + this.uniuqeID); });

@@ -15,5 +15,9 @@ module.exports = {
     network: {
         port: 80
     },
-    secret: 'Bar+Lihi+Roie+Omer+Lior'
+    secret: 'Bar+Lihi+Roie+Omer+Lior',
+    Script: {
+        executer: "python",
+        path: "/home/project25/Documents/WhatsApp/WebWhatsapp-Wrapper-master/sample/echo.py"
+    }
 };
