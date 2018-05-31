@@ -20,7 +20,7 @@ module.exports = class WhatsApp {
                 case 0:
                     break;
                 case 1:             //Send QR to user
-                    console.log('QR: Send to user [' + obj.data.toString() + ']');
+                    //console.log('QR: Send to user [' + obj.data.toString() + ']');
                     this.socket.emit('qrArrived', obj.data.toString());
                     break;
                 case 2:             //Notify user about successful scan
