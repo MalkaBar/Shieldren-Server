@@ -137,6 +137,8 @@ function authVerify(req)
     let token = req.headers['x-auth-token'];
     let pid = req.params.pid;
 
+    if (!token || !pid) return false;
+
     try {
         let result = jwt.verify(token, require('../configuration').secret);
         if (result.id == pid) return true;
