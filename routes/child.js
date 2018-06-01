@@ -22,7 +22,7 @@ var jwt                 = require('jsonwebtoken');
 ///---------------------------------------------------------
 
 router.get('/:pid',function(req, res, next){
-    if (authVerify(req) !== req.params.pid) { res.sendStatus(403); }
+    if (!authVerify(req)) { res.sendStatus(403); }
     else {
         try {
             childController.get(parseInt(req.params.pid), (err, result) => {
@@ -61,7 +61,8 @@ router.get('/:pid',function(req, res, next){
 ///     500 - INTERNAL ERROR
 ///---------------------------------------------------------
 router.post('/:pid', function (req, res, next) {
-    if (authVerify(req) !== req.params.pid) { return res.sendStatus(403); }
+    if (!authVerify(req)) { return res.sendStatus(403); }
+    else {
         try {
             if (!req.body.phoneNumber)  throw new Error('ERR_MISSING_PHONE');
             if (!req.body.childName)    throw new Error('ERR_MISSING_NAME');
@@ -93,6 +94,7 @@ router.post('/:pid', function (req, res, next) {
             console.log('\033[0;31m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE NOT BEEN ADDED [' + err + ']');
             return res.status(400).json({'reason': err.message});
         }
+    }
 });
 
 ///---------------------------------------------------------
@@ -111,7 +113,7 @@ router.post('/:pid', function (req, res, next) {
 ///     500 - INTERNAL ERROR
 ///---------------------------------------------------------
 router.get('/:pid/:cid', function (req, res, next) {
-    if (authVerify(req) !== req.params.pid) { return res.sendStatus(403); }
+    if (authVerify(req)) { return res.sendStatus(403); }
     try {
         if (!validator.isNumeric(req.params.cid)) throw new Error('ERR_INVAILD_CID');
         childController.getByChild(req.params.pid, req.params.cid, (err, result) => {
@@ -132,12 +134,15 @@ router.get('/:pid/:cid', function (req, res, next) {
 
 function authVerify(req)
 {
-    let token = req.headers['X-Auth-Token'];
-    if (!token) return 0;
-    jwt.verify(token, require('../configuration').secret, (err, decoded) => {
-        if (err) return 0;
-        return decoded.id.toString();
-    });
+    let token = req.headers['x-auth-token'];
+    let pid = req.params.pid;
+
+    try {
+        let result = jwt.verify(token, require('../configuration').secret);
+        if (result.id == pid) return true;
+        return false;
+    }
+    catch (err) { return false; } 
 }
 
 module.exports = router;
