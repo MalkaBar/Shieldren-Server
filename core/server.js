@@ -57,10 +57,10 @@ io.of('/scan').on('connection', (socket) => {
   socket.emit('qrHello', 'Hello');
   socket.on('qrStart', (data) => {
     if ((data.parent))
-      if (data.phone)
-        new WhatsApp(socket, data.phone);
+      if (data.child)
+        new WhatsApp(socket, data);
       else
-        socket.emit('qrError', "Missing phone number");
+        socket.emit('qrError', "Missing child ID");
     else
       socket.emit('qrError', 'Unauthorized');
   })
