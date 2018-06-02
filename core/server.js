@@ -56,7 +56,7 @@ io.of('/scan').on('connection', (socket) => {
   console.log("WS: new client " + socket.client.id);
   socket.emit('qrHello', 'Hello');
   socket.on('qrStart', (data) => {
-    if ((data.parent))
+    if (data.parent)
       if (data.child)
         new WhatsApp(socket, data);
       else
