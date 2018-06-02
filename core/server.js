@@ -1,11 +1,11 @@
-var express       = require('express');
-var path          = require('path');
-var bodyParser    = require('body-parser');
-var cors          = require('cors');
-var morgan        = require('morgan');
-var WhatsApp      = require('./whatsapp');
-const { network } = require('../configuration');
-
+var express     = require('express');
+var path        = require('path');
+var bodyParser  = require('body-parser');
+var cors        = require('cors');
+var morgan      = require('morgan');
+var WhatsApp    = require('./whatsapp');
+var { network } = require('../configuration');
+var classifier  = require('./classifier');
 morgan(function (tokens, req, res) {
   return [
     tokens.method(req, res),
@@ -72,8 +72,6 @@ io.of('/scan').on('connection', (socket) => {
 
 app.io = io;
 // WEB SOCKET END //*/
-
-
 
 http.listen(app.get('port'), function () {
   console.log('\033[0;32m[SERVER]\033[0m ' + app.locals.name + ' server running...');

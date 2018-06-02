@@ -1,9 +1,7 @@
 var exec = require('child_process').exec;
 var cluster = require('cluster');
 var isProd = process.env.NODE_ENV == 'production';
-var numCPUs = isProd ? 1 : 1; // require('os').cpus().length
-//var workers = {};
-//var clusters = {};
+var numCPUs = isProd ? require('os').cpus().length : 1;
 
 function startServer() {
     require('./core/server');
@@ -21,7 +19,6 @@ if (cluster.isMaster && isProd) { // cluster.isWorker
     startServer();
 }
 
-//cluster.workers[id].process.pid
 cluster.on('exit', function (worker) {
     console.log('\033[0;32m[SERVER]\033[0m cluster ' + worker.id + ' died :(');
     console.log('\033[0;32m[SERVER]\033[0m Starting a new cluster...');

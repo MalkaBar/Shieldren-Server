@@ -6,7 +6,12 @@ var connection = new Connection(db.config);
 
 connection.on('connect', (err) => {
     if (err) { return console.log('\033[0;31m[SQL SERVER]\033[0m Faile connection to server [' + db.config.server + ']\n'); }
-    return console.log('\033[0;32m[SQL SERVER]\033[0m Open connection to server [' + db.config.server + ']\n'); 
+    
+    let request = new Request("UPDATE [shieldren].[children] SET qrStatus = 0;", (err, value) => {
+        if (err) console.log("\033[0;31m[SQL ERROR]\033[0m Failed initilize children status");
+    });
+    connection.execSql(request);
+    return console.log('\033[0;32m[SQL SERVER]\033[0m Open connection to server [' + db.config.server + ']\n');
 });
 connection.on('debug', function(text) {
     if (db.monitor) console.log('\033[0;35m[SQL DEBUG]\033[0m' + text);

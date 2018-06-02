@@ -19,5 +19,9 @@ module.exports = {
     Script: {
         executer: "python",
         path: "/home/project25/Documents/WhatsApp/WebWhatsapp-Wrapper-master/sample/echo.py"
+    },
+    Algorithm: {
+        executer: "python",
+        path: "./scripts/classify.py"
     }
 };

@@ -188,7 +188,7 @@ class Classify (threading.Thread):
 
     def printJson(self):
         result = {
-            "code": 1,
+            "code": 2,
             "message": "classification result",
             "data": {
                 "id": self.ID,
@@ -201,13 +201,18 @@ class Classify (threading.Thread):
 
 
 threads = []
-print '{ "id": 5, "message": "End load model. Start waiting for sentences.", "data": null }'
+print '{ "code": 1, "message": "End load model. Start waiting for sentences.", "data": null }'
 
 while True:
-    sentence = raw_input('')
-    if ((sentence == None) or (len(sentence) < 2)):
-        pass
+    stringInput = sys.stdin.readlines()
+    if (stringInput == None):
+        continue
     else:
-        thread = Classify(model, sentence, 1000)
-        thread.start()
-        threads.append(thread)
+        jsonData = json.loads(stringInput)
+
+        if (len(jsonData.sentence) < 2):
+            pass
+        else:
+            thread = Classify(model, jsonData.sentence, jsonData.id)
+            thread.start()
+            threads.append(thread)

@@ -1,4 +1,4 @@
-const { spawn }     = require('child_process');
+var { spawn }     = require('child_process');
 var algoController  = require('../controllers/algorithmControler');
 var debug           = require('../configuration').db.monitor;
 var { Script }      = require('../configuration');
@@ -34,16 +34,13 @@ module.exports = class WhatsApp {
                     this.socket.emit('qrArrived', obj.data.toString());
                     break;
                 case 2:             //Notify user about successful scan
-                    let interval = setInterval( () => {
-                        algoController.qrBeenScaned((err) => {
-                            if (err) { this.socket.emit('qrError', 'Error while update DB. retry again in 1 minute(s).'); }
-                            else {
-                                this.socket.emit('qrScanned','QR been scanned. closing session.');
-                                this.socket.disconnect(true);
-                                clearInterval(inerval);
-                            }
-                        });
-                    }, 1000);                    
+                    algoController.qrBeenScanned(this.childInfo.childid, (err) => {
+                        if (err) { this.socket.emit('qrError', 'Error while update DB. retry again in 1 minute(s).'); }
+                        else {
+                            this.socket.emit('qrScanned','QR been scanned. closing session.');
+                            this.socket.disconnect(true);
+                        }
+                    });                    
                     break;
                 case 3:             //New message received
                     algoController.save(obj.data, (err) => {
