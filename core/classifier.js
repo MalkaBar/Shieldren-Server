@@ -16,8 +16,8 @@ class Classifier {
     clasiffy(sentenceData) {
         let identifier = uniqid();
         ClasiffierSentences[identifier] = sentenceData;
-        this.subproccess.stdin.write('{"id": ' + identifier + ', "sentence": "' + sentenceData.sentence + '"}\n');
-        console.log('[Classifier] Sentence send to clasification: ' + sentenceData.sentence);
+        this.subproccess.stdin.write('{"id": ' + identifier + ', "sentence": "' + sentenceData.message + '"}\n');
+        console.log('[Classifier] Sentence send to clasification: ' + sentenceData.message);
     }
 }
 

@@ -24,5 +24,10 @@ module.exports = {
     Algorithm: {
         executer: "python",
         path: "./scripts/classify.py"
+    },
+    Notification: {
+        key: 'b7ueLfyKQPKGCbJ0HMKy9A',
+        secret:'jzGV8pN9SJeq_znwo3NtGA',
+        masterSecret: 'OVdkrLWTRPaHVNAhjLQTwA'
     }
 };
