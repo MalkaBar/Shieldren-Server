@@ -16,6 +16,10 @@ import pickle
 import sys
 import threading
 import json
+import os
+
+print '{ "code": 3, "message": "Start load model.", "data": null }'
+sys.stdout.flush()
 
 def preprocess_line(line):
     lang = langid.classify(str(line))[0]
@@ -54,7 +58,7 @@ class Lang:
         self.word_count = 0
         self.ind2word = {}
         self.word2ind = {}
-        for line in open("dataset/wiki.he.vec"):
+        for line in open(os.path.dirname(os.path.realpath(__file__)) + "/dataset/wiki.he.vec"):
             values = line.split(" ")
             if len(values) == 2:
                 continue
@@ -67,7 +71,7 @@ class Lang:
             self.word_count += 1
 
 try:
-    lang = pickle.load('M4x800/lang.checkpoint.8400')
+    lang = pickle.load(os.path.dirname(os.path.realpath(__file__)) + "/dataset/lang.final")
 except:
     lang = Lang()
 
@@ -156,10 +160,10 @@ def softmax(x):
     return np.exp(x) / np.sum(np.exp(x), axis=0)
 
 # TODO - Define the Model
-n_layers = 4
-hidden_size = 800
+n_layers = 5
+hidden_size = 400
 model = SentimentModel(lang, hidden_size, 2, n_layers)
-model.load_state_dict(torch.load("M4x800/model.checkpoint.8400"))
+model.load_state_dict(torch.load(os.path.dirname(os.path.realpath(__file__)) + "/dataset/model.final"))
 
 
 class Classify (threading.Thread):
@@ -175,8 +179,8 @@ class Classify (threading.Thread):
             self.printJson()
         else:
             try:
-                sentence = preprocess_line(self.sentence)
-                sentence = process_line(sentence.strip().decode('utf-8', errors='ignore'))
+#                sentence = preprocess_line(self.sentence)
+                sentence = process_line(self.sentence.strip()) #.decode('utf-8', errors='ignore'))
 
                 test_var = sentence2variable(sentence)
                 hidden = self.model.init_hidden()
@@ -191,7 +195,6 @@ class Classify (threading.Thread):
             "code": 2,
             "message": "classification result",
             "data": {
-                "id": self.ID,
                 "sentence": self.sentence,
                 "classification": self.classification
             }
@@ -202,17 +205,22 @@ class Classify (threading.Thread):
 
 threads = []
 print '{ "code": 1, "message": "End load model. Start waiting for sentences.", "data": null }'
+sys.stdout.flush()
 
 while True:
-    stringInput = sys.stdin.readlines()
+    stringInput = raw_input()
     if (stringInput == None):
         continue
     else:
-        jsonData = json.loads(stringInput)
-
-        if (len(jsonData.sentence) < 2):
-            pass
-        else:
-            thread = Classify(model, jsonData.sentence, jsonData.id)
-            thread.start()
-            threads.append(thread)
+        try:
+            jsonData = json.loads(stringInput)
+#            print jsonData
+            if (len(jsonData['sentence']) <= 0):
+                continue
+            else:
+                thread = Classify(model, jsonData['sentence'], jsonData['id'])
+                thread.start()
+                threads.append(thread)
+        except Exception as err:
+            print "{ \"code\": -1, \"message\": \"%s\", \"data\": null }" % sys.exc_info()[0]
+            sys.stdout.flush()
