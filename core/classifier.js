@@ -8,7 +8,7 @@ var ClasiffierSentences = {}
 class Classifier {
     constructor() {
         this.subproccess = spawn(Algorithm.executer, [Algorithm.path], { stdio: 'pipe'});
-        this.subproccess.stdout.on('data', (data) => { this.processRecievedData(data.toString()); });
+        this.subproccess.stdout.on('data', (data) => { processRecievedData(data.toString()); });
         this.subproccess.stderr.on('data', (data) => { console.log('[Classifier] ' + data); });
         this.subproccess.on('exit', (data) => { console.log('[Classifier] been exited'); });
     }
@@ -25,12 +25,12 @@ function processRecievedData(data)
 {
     try {
         let obj = JSON.parse(data);
-        console.log(data);
         switch (obj.code) {
             case 1:             // Model have loaded and calssifier ready to start
                 console.log('[Classifier] Finish loading.');
                 break;
             case 2:             // Classify sentence been recieved
+                console.log(JSON.stringify(data));
                     /***
                      * @TODO: 
                      *      1. update user
