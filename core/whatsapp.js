@@ -28,6 +28,8 @@ module.exports = class WhatsApp {
             console.log('[WHATSAPP] JSON ARRIVED:' + message);
             let obj = JSON.parse(message);
             switch (obj.code) {
+                case -1:
+                    this.subproccess.kill('SIGTERM');
                 case 0:             //Whatsapp session been logout
                     break;
                 case 1:             //Send QR to user
