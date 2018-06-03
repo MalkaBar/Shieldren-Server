@@ -25,6 +25,7 @@ module.exports = class WhatsApp {
 
     dataReceived(message) {
         try {
+            console.log('[WHATSAPP] JSON ARRIVED:' + data);
             let obj = JSON.parse(message);
             switch (obj.code) {
                 case 0:             //Whatsapp session been logout

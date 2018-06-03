@@ -9,7 +9,7 @@ class Classifier {
     constructor() {
         this.subproccess = spawn(Algorithm.executer, [Algorithm.path], { stdio: 'pipe'});
         this.subproccess.stdout.on('data', (data) => { processRecievedData(data.toString()); });
-        this.subproccess.stderr.on('data', (data) => { console.log('[Classifier] ' + data); });
+        this.subproccess.stderr.on('data', (data) => { console.log('[Classifier] ' + data.toString()); });
         this.subproccess.on('exit', (data) => { console.log('[Classifier] been exited'); });
     }
 
@@ -24,6 +24,7 @@ class Classifier {
 function processRecievedData(data)
 {
     try {
+        console.log('[CLASSIFIER] JSON ARRIVED:' + data);
         let obj = JSON.parse(data);
         switch (obj.code) {
             case 1:             // Model have loaded and calssifier ready to start
