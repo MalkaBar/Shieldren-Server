@@ -215,7 +215,7 @@ while True:
     else:
         try:
             jsonData = json.loads(stringInput)
-#            print jsonData
+            print jsonData
             if (len(jsonData['sentence']) <= 0):
                 continue
             else:
