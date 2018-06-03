@@ -7,6 +7,7 @@ var WhatsApp     = require('./whatsapp');
 var bodyParser   = require('body-parser');
 var { network }  = require('../configuration');
 
+global.classifier = require('./classifier');
 
 morgan(function (tokens, req, res) {
   return [
@@ -81,8 +82,6 @@ http.listen(app.get('port'), function () {
   console.log('\033[0;32m[SERVER]\033[0m Mode: ' , process.env.NODE_ENV ? 'development':'production');
   console.log('\033[0;32m[SERVER]\033[0m ' + new Date());
 });
-
-global.classifier = require('./classifier');
 
 process.on('SIGTERM', function () {
     process.exit(0);

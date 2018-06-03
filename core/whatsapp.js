@@ -10,14 +10,14 @@ module.exports = class WhatsApp {
         
         algoController.pullChildData(data.child, (err, result) => {
             if (err) {
-                console.log('[WHATSAPP] Error: ' + err);
+                if (debug) console.log('[WHATSAPP] Error: ' + err);
                 this.socket.emit('qrError', 'Error received. close session. [err = ' + err.message + ']');
                 socket.disconnect(true);
             } else {
                 this.childInfo = result;
                 this.subproccess = spawn(Script.executer, [Script.path, this.childInfo.phoneNumber], { detached: true });
                 this.subproccess.stdout.on('data', (data) => { this.dataReceived(data.toString()); });
-                this.subproccess.stderr.on('data', (data) => { console.log('[WHATSAPP] Error: ' + data); });
+                this.subproccess.stderr.on('data', (data) => { if (debug) console.log('[WHATSAPP] Error: ' + data); });
                 this.subproccess.on('exit', (data) => { console.log('[WHATSAPP] Close connection for ' + this.uniuqeID); });
             }
         });    
@@ -25,7 +25,7 @@ module.exports = class WhatsApp {
 
     dataReceived(message) {
         try {
-            console.log('[WHATSAPP] JSON ARRIVED:' + message);
+            if (debug) console.log('[WHATSAPP] JSON ARRIVED:' + message);
             let obj = JSON.parse(message);
             switch (obj.code) {
                 case -1:
@@ -49,6 +49,7 @@ module.exports = class WhatsApp {
                     this.uniuqeID = obj.seesionID;
                     break;
                 default:
+                    if (debug) console.log('[WHATSAPP] DEBUG:' + message);
             }
         }
         catch (err) {

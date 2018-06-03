@@ -1,7 +1,9 @@
 var { spawn }     = require('child_process');
 var { Algorithm } = require('../configuration');
-var db = require('../core/db');
-var uniqid = require('uniqid');
+var debug         = require('../configuration').db.monitor;
+var db            = require('../core/db');
+var uniqid        = require('uniqid');
+var notification = require('./notification');
 
 var ClasiffierSentences = {}
 
@@ -9,26 +11,26 @@ class Classifier {
     constructor() {
         this.subproccess = spawn(Algorithm.executer, [Algorithm.path], { stdio: 'pipe'});
         this.subproccess.stdout.on('data', (data) => { processRecievedData(data.toString()); });
-        this.subproccess.stderr.on('data', (data) => { console.log('[Classifier] ' + data.toString()); });
-        this.subproccess.on('exit', (data) => { console.log('[Classifier] been exited'); });
+        this.subproccess.stderr.on('data', (data) => { if (debug) console.log('[CLASSIFIER] ' + data.toString()); });
+        this.subproccess.on('exit', (data) => { console.log('[CLASSIFIER] been exited'); });
     }
 
     clasiffy(sentenceData) {
         let identifier = uniqid();
         ClasiffierSentences[identifier] = sentenceData;
         this.subproccess.stdin.write('{"id": "' + identifier + '", "sentence": "' + sentenceData.message.toString() + '"}\n');
-        console.log('[Classifier] Sentence send to clasification: ' + sentenceData.message);
+        if (debug) console.log('[CLASSIFIER] Sentence send to clasification: ' + sentenceData.message);
     }
 }
 
 function processRecievedData(data)
 {
     try {
-        console.log('[CLASSIFIER] JSON ARRIVED:' + data);
+        if (debug) console.log('[CLASSIFIER] JSON ARRIVED:' + data);
         let obj = JSON.parse(data);
         switch (obj.code) {
             case 1:             // Model have loaded and calssifier ready to start
-                console.log('[Classifier] Finish loading.');
+                console.log('[CLASSIFIER] Finish loading.');
                 break;
             case 2:             // Classify sentence been recieved
                 console.log(JSON.stringify(data));
@@ -56,7 +58,13 @@ function processRecievedData(data)
                     {
                         let sentenceData = ClasiffierSentences[identifier];
                         delete ClasiffierSentences[identifier];
-                        sentenceData.group = sentenceData.group?1:0; 
+                        sentenceData.group = sentenceData.group?1:0;
+
+                        notification.Notice('התקבלה הודעה מאיימת',null, (err, recipient) => {
+                            if (err) console.log('[Notify] Failed to notification to client ' + recipient);
+                            else console.log('[Notify] Sent to client ' + recipient);
+                        });
+
                         db.run("INSERT INTO [shieldren].[messages] VALUES ('" + sentenceData.caller + "', '" + sentenceData.callee + "', '" + sentenceData.timestamp + "', '" + sentenceData.group + "', '" + sentenceData.message + "'); ",
                             (err, result) => { 
                                 if (err) return err;
@@ -65,13 +73,13 @@ function processRecievedData(data)
                     }
                 break;
             case 3:             // Script start to run. Loading the model.
-                console.log('[Classifier] Start loading');
+                console.log('[CLASSIFIER] Start loading');
                 break;
             default:            // Errors
                 throw new Error(data);
         }
     }
-    catch(err) { console.log('[Classifier] Error: ' + err); }
+    catch(err) { console.log('[CLASSIFIER] Error: ' + err); }
 }
 
 module.exports = new Classifier();

@@ -10,7 +10,7 @@ module.exports = {
                 encrypt: false
             }
         },
-        monitor: true
+        monitor: false
     },
     network: {
         port: 80

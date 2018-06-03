@@ -195,8 +195,8 @@ class Classify (threading.Thread):
             "code": 2,
             "message": "classification result",
             "data": {
-                "identifier": self.ID,
-                "sentence": self.sentence,
+                "identifier": '"' + self.ID + '"',
+                "sentence": '"' + self.sentence + '"',
                 "classification": self.classification
             }
         }
@@ -215,7 +215,6 @@ while True:
     else:
         try:
             jsonData = json.loads(stringInput)
-            print jsonData
             if (len(jsonData['sentence']) <= 0):
                 continue
             else:

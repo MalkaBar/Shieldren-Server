@@ -9,18 +9,23 @@ class Notify {
             'masterSecret': Notification.masterSecret
         });
     }
-    Notice (notification, client) {
+    Notice (notification, recipient, callback) {
         if (notification)
+        {
+            if (!recipient) recipient = 'all';
+
             this.urbanAirshipPush.push.send({
                 'device_types': 'all',
-                'audience': 'all',
+                'audience': recipient,
                 'notification': {
                     'alert': notification
                 }
              }, (err) => {
-                 if (err) return console.log('[Notify] Failed to notification to client ' + client);
-                 return console.log('[Notify] Sent to client ' + client);
+                 if (err) callback(err, recipient);
+                 else callback(null, recipient);
              });
+        }
+        else callback(new Error('No message to sent'), recipient);
     }
 }
 
