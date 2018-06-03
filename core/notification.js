@@ -1,8 +1,8 @@
-var UrbanAirShip     = require('urban-airship-push');
+var UrbanAirshipPush = require('urban-airship-push');
 var { Notification } = require('../configuration');
 
 class Notify {
-    constructor(key, secret, masterSecret){
+    constructor(){
         this.urbanAirshipPush = new UrbanAirshipPush({
             'key': Notification.key,
             'secret': Notification.secret,
