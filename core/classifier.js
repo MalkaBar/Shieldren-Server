@@ -71,7 +71,7 @@ function processRecievedData(data)
                 throw new Error(data);
         }
     }
-    catch(err) { console.log('[Classifier] ' + err); }
+    catch(err) { console.log('[Classifier] Error: ' + err); }
 }
 
 module.exports = new Classifier();

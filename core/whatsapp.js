@@ -10,15 +10,15 @@ module.exports = class WhatsApp {
         
         algoController.pullChildData(data.child, (err, result) => {
             if (err) {
-                console.log('WhatsApp Error: ' + err);
+                console.log('[WHATSAPP] Error: ' + err);
                 this.socket.emit('qrError', 'Error received. close session. [err = ' + err.message + ']');
                 socket.disconnect(true);
             } else {
                 this.childInfo = result;
                 this.subproccess = spawn(Script.executer, [Script.path, this.childInfo.phoneNumber], { detached: true });
                 this.subproccess.stdout.on('data', (data) => { this.dataReceived(data.toString()); });
-                this.subproccess.stderr.on('data', (data) => { console.log('Whatsapp Error: ' + data); });
-                this.subproccess.on('exit', (data) => { console.log('Whatsapp: Close connection for ' + this.uniuqeID); });
+                this.subproccess.stderr.on('data', (data) => { console.log('[WHATSAPP] Error: ' + data); });
+                this.subproccess.on('exit', (data) => { console.log('[WHATSAPP] Close connection for ' + this.uniuqeID); });
             }
         });    
     }
@@ -50,7 +50,7 @@ module.exports = class WhatsApp {
             }
         }
         catch (err) {
-            console.log('Error: ' + err);
+            console.log('[WHATSAPP] Error: ' + err);
             this.socket.emit('qrError', 'Error received. close session. [err = ' + err.message + ']');
         }
     }
