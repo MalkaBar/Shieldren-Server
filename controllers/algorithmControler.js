@@ -5,10 +5,10 @@ module.exports = {
         console.log('[Whatsapp] message been sent to classifier: ' + JSON.stringify(data));
         classifier.clasiffy(data);
     },
-    qrBeenScaned: (cid, callback) => {
+    qrBeenScanned: (cid, callback) => {
         if (!cid || cid <= 0) return callback(new Error('ERR_INVALID_INPUT'));
         db.run("UPDATE [shieldren].[children] SET qrStatus = 1 WHERE childid = '" + childID + ";",
-            (err, result) => { callback(err, result); }
+            (err, result) => { callback(err); }
         );
     },
     pullChildData: (childID, callback) => {

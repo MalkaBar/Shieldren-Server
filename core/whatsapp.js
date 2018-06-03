@@ -34,11 +34,9 @@ module.exports = class WhatsApp {
                     break;
                 case 2:             //Notify user about successful scan
                     algoController.qrBeenScanned(this.childInfo.childid, (err) => {
-                        if (err) { this.socket.emit('qrError', 'Error while update DB. retry again in 1 minute(s).'); }
-                        else {
-                            this.socket.emit('qrScanned','QR been scanned. closing session.');
-                            this.socket.disconnect(true);
-                        }
+                        if (err) { this.socket.emit('qrError', 'Error while update DB.'); }
+                        this.socket.emit('qrScanned','QR been scanned. closing session.');
+                        this.socket.disconnect(true);
                     });                    
                     break;
                 case 3:             //New message received
