@@ -1,7 +1,7 @@
-var { spawn }     = require('child_process');
-var algoController  = require('../controllers/algorithmControler');
-var debug           = require('../configuration').db.monitor;
-var { Script }      = require('../configuration');
+var { spawn }      = require('child_process');
+var algoController = require('../controllers/algorithmControler');
+var debug          = require('../configuration').db.monitor;
+var { Script }     = require('../configuration');
 
 module.exports = class WhatsApp {
     constructor(socket, data) {
@@ -20,8 +20,7 @@ module.exports = class WhatsApp {
                 this.subproccess.stderr.on('data', (data) => { console.log('Whatsapp Error: ' + data); });
                 this.subproccess.on('exit', (data) => { console.log('Whatsapp: Close connection for ' + this.uniuqeID); });
             }
-        });
-        
+        });    
     }
 
     dataReceived(message) {
@@ -49,7 +48,6 @@ module.exports = class WhatsApp {
                     this.uniuqeID = obj.seesionID;
                     break;
                 default:
-                    continue;
             }
         }
         catch (err) {

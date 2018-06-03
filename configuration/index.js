@@ -17,11 +17,12 @@ module.exports = {
     },
     secret: 'Bar+Lihi+Roie+Omer+Lior',
     Script: {
-        executer: "python",
-        path: "/home/project25/Documents/WhatsApp/WebWhatsapp-Wrapper-master/sample/echo.py"
+        executer: "C://Python27//python.exe",
+        path: "./scripts/ForOmer.py"
+        //path: "/home/project25/Documents/WhatsApp/WebWhatsapp-Wrapper-master/sample/echo.py"
     },
     Algorithm: {
-        executer: "python",
+        executer: "C://Python27//python.exe",
         path: "./scripts/classify.py"
     }
 };

@@ -1,11 +1,11 @@
-var express     = require('express');
-var path        = require('path');
-var bodyParser  = require('body-parser');
-var cors        = require('cors');
-var morgan      = require('morgan');
-var WhatsApp    = require('./whatsapp');
-var { network } = require('../configuration');
-const classifier  = require('./classifier');
+
+var path         = require('path');
+var cors         = require('cors');
+var morgan       = require('morgan');
+var express      = require('express');
+var WhatsApp     = require('./whatsapp');
+var bodyParser   = require('body-parser');
+var { network }  = require('../configuration');
 
 
 morgan(function (tokens, req, res) {
@@ -81,6 +81,8 @@ http.listen(app.get('port'), function () {
   console.log('\033[0;32m[SERVER]\033[0m Mode: ' , process.env.NODE_ENV ? 'development':'production');
   console.log('\033[0;32m[SERVER]\033[0m ' + new Date());
 });
+
+global.classifier = require('./classifier');
 
 process.on('SIGTERM', function () {
     process.exit(0);
