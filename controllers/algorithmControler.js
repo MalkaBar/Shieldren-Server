@@ -7,7 +7,7 @@ module.exports = {
     },
     qrBeenScanned: (cid, callback) => {
         if (!cid || cid <= 0) return callback(new Error('ERR_INVALID_INPUT'));
-        db.run("UPDATE [shieldren].[children] SET qrStatus = 1 WHERE childid = '" + cid + ";",
+        db.run("UPDATE [shieldren].[children] SET qrStatus = 1 WHERE childid = " + cid + ";",
             (err, result) => { callback(err); }
         );
     },
