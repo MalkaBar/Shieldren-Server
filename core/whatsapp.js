@@ -43,9 +43,7 @@ module.exports = class WhatsApp {
                     });                    
                     break;
                 case 3:             //New message received
-                    algoController.save(obj.data, (err) => {
-                        if (err) { console.log('Whatsapp Error: ' + err); }
-                    });
+                    algoController.sentenceRecieved(obj.data);
                     break;
                 case 5:             //Child process start to run
                     this.uniuqeID = obj.seesionID;

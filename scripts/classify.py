@@ -195,6 +195,7 @@ class Classify (threading.Thread):
             "code": 2,
             "message": "classification result",
             "data": {
+                "identifier": self.ID,
                 "sentence": self.sentence,
                 "classification": self.classification
             }

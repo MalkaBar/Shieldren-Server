@@ -5,7 +5,9 @@ var cors        = require('cors');
 var morgan      = require('morgan');
 var WhatsApp    = require('./whatsapp');
 var { network } = require('../configuration');
-var classifier  = require('./classifier');
+const classifier  = require('./classifier');
+
+
 morgan(function (tokens, req, res) {
   return [
     tokens.method(req, res),

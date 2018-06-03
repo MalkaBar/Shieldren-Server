@@ -1,6 +1,9 @@
 var { spawn }     = require('child_process');
 var {Algorithm} = require('../configuration');
+var db = require('../core/db');
+var uniqid = require('uniqid');
 
+var ClasiffierSentences = {}
 
 class Classifier {
     constructor() {
@@ -8,11 +11,12 @@ class Classifier {
         this.subproccess.stdout.on('data', (data) => { this.processRecievedData(data.toString()); });
         this.subproccess.stderr.on('data', (data) => { console.log('[Classifier] ' + data); });
         this.subproccess.on('exit', (data) => { console.log('[Classifier] been exited'); });
-        console.log('[Classifier] Start loading');
     }
 
-    clasiffy(identify, sentence, callback) {
-        this.subproccess.stdio.write('{"id": ' + identify + ', "sentence": "' + sentence + '"}\n');
+    clasiffy(sentenceData, callback) {
+        let identifier = uniqid();
+        ClasiffierSentences[identifier] = sentenceData;
+        this.subproccess.stdin.write('{"id": ' + identifier + ', "sentence": "' + sentenceData.sentence.trim() + '"}\n');
     }
 }
 
@@ -22,21 +26,50 @@ function processRecievedData(data)
         let obj = JSON.parse(data);
         console.log(data);
         switch (obj.code) {
-            case 1:             // Model loaded and calssifier ready to start
-                console.log('\033[0;33m[Classifier]\033[0m Start loading');
+            case 1:             // Model have loaded and calssifier ready to start
+                console.log('[Classifier] Finish loading.');
                 break;
             case 2:             // Classify sentence been recieved
                     /***
                      * @TODO: 
                      *      1. update user
-                     *      2. svae sentences
+                     *      2. save sentences
+                     * 
+                     *  Received output from classifier
+                     * 
+                     * {
+                     *  "message": "classification result",
+                     *  "code": 2,
+                     *  "data":
+                     *      {
+                     *          "classification": 1,
+                     *          "identifier": 1001,
+                     *          "sentence": "\u05d0\u05d9\u05d6\u05d4 \u05d9\u05d5\u05dd \u05e9\u05de\u05d7 \u05dc\u05d9 \u05d4\u05d9\u05d5\u05dd"
+                     *      }
+                     * }
+                     * 
                      * ***/
+
+                    if (obj.data.classification == 1)
+                    {
+                        let sentenceData = ClasiffierSentences[identifier];
+                        delete ClasiffierSentences[identifier];
+                        sentenceData.group = sentenceData.group?1:0; 
+                        db.run("INSERT INTO [shieldren].[messages] VALUES ('" + sentenceData.caller + "', '" + sentenceData.callee + "', '" + sentenceData.timestamp + "', '" + sentenceData.group + "', '" + sentenceData.message + "'); ",
+                            (err, result) => { 
+                                if (err) return err;
+                             }
+                        );
+                    }
+                break;
+            case 3:             // Script start to run. Loading the model.
+                console.log('[Classifier] Start loading');
                 break;
             default:            // Errors
-            console.log('\033[0;33m[Classifier]\033[0m ' + err);
+                throw new Error(data);
         }
     }
-    catch(err) { console.log('\033[0;33m[Classifier]\033[0m ' + err); }
+    catch(err) { console.log('[Classifier] ' + err); }
 }
 
 module.exports = new Classifier();
