@@ -1,5 +1,5 @@
 var { spawn }     = require('child_process');
-var {Algorithm} = require('../configuration');
+var { Algorithm } = require('../configuration');
 var db = require('../core/db');
 var uniqid = require('uniqid');
 
@@ -13,10 +13,11 @@ class Classifier {
         this.subproccess.on('exit', (data) => { console.log('[Classifier] been exited'); });
     }
 
-    clasiffy(sentenceData, callback) {
+    clasiffy(sentenceData) {
         let identifier = uniqid();
         ClasiffierSentences[identifier] = sentenceData;
         this.subproccess.stdin.write('{"id": ' + identifier + ', "sentence": "' + sentenceData.sentence.trim() + '"}\n');
+        console.log('[Classifier] Sentence send to clasification: ' + sentenceData.sentence);
     }
 }
 
