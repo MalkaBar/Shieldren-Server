@@ -25,7 +25,7 @@ module.exports = class WhatsApp {
 
     dataReceived(message) {
         try {
-            console.log('[WHATSAPP] JSON ARRIVED:' + data);
+            console.log('[WHATSAPP] JSON ARRIVED:' + message);
             let obj = JSON.parse(message);
             switch (obj.code) {
                 case 0:             //Whatsapp session been logout
@@ -35,7 +35,7 @@ module.exports = class WhatsApp {
                     break;
                 case 2:             //Notify user about successful scan
                     algoController.qrBeenScanned(this.childInfo.childid, (err) => {
-                        if (err) { this.socket.emit('qrError', 'Error while update DB.'); }
+                        if (err) { return this.socket.emit('qrError', 'Error while update DB.'); }
                         this.socket.emit('qrScanned','QR been scanned. closing session.');
                         this.socket.disconnect(true);
                     });                    
