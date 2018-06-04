@@ -195,8 +195,7 @@ class Classify (threading.Thread):
             "code": 2,
             "message": "classification result",
             "data": {
-                "identifier": '"' + self.ID + '"',
-                "sentence": '"' + self.sentence + '"',
+                "identifier":  self.ID,
                 "classification": self.classification
             }
         }
@@ -222,5 +221,5 @@ while True:
                 thread.start()
                 threads.append(thread)
         except Exception as err:
-            print "{ \"code\": -1, \"message\": \"%s\", \"data\": null }" % sys.exc_info()[0]
+            print '{ "code": -1, "message": "%s", "data": null }' % sys.exc_info()[0]
             sys.stdout.flush()

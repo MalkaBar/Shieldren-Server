@@ -33,7 +33,7 @@ function processRecievedData(data)
                 console.log('[CLASSIFIER] Finish loading.');
                 break;
             case 2:             // Classify sentence been recieved
-                console.log(JSON.stringify(data));
+                if (debug) console.log(JSON.stringify(data));
                     /***
                      * @TODO: 
                      *      1. update user
@@ -54,23 +54,23 @@ function processRecievedData(data)
                      * 
                      * ***/
 
-                    if (obj.data.classification == 1)
-                    {
-                        let sentenceData = ClasiffierSentences[identifier];
-                        delete ClasiffierSentences[identifier];
-                        sentenceData.group = sentenceData.group?1:0;
+                if (obj.data.classification == 1)
+                {
+                    let sentenceData = ClasiffierSentences[identifier];
+                    delete ClasiffierSentences[identifier];
+                    sentenceData.group = sentenceData.group?1:0;
 
-                        notification.Notice('התקבלה הודעה מאיימת',null, (err, recipient) => {
-                            if (err) console.log('[Notify] Failed to notification to client ' + recipient);
-                            else console.log('[Notify] Sent to client ' + recipient);
-                        });
+                    notification.Notice('התקבלה הודעה מאיימת',null, (err, recipient) => {
+                        if (err) console.log('[Notify] Failed to notification to client ' + recipient);
+                        else console.log('[Notify] Sent to client ' + recipient);
+                    });
 
-                        db.run("INSERT INTO [shieldren].[messages] VALUES ('" + sentenceData.caller + "', '" + sentenceData.callee + "', '" + sentenceData.timestamp + "', '" + sentenceData.group + "', '" + sentenceData.message + "'); ",
-                            (err, result) => { 
-                                if (err) return err;
-                             }
-                        );
-                    }
+                    db.run("INSERT INTO [shieldren].[messages] VALUES ('" + sentenceData.caller + "', '" + sentenceData.callee + "', '" + sentenceData.timestamp + "', '" + sentenceData.group + "', '" + sentenceData.message + "'); ",
+                        (err, result) => { 
+                            if (err) return err;
+                            }
+                    );
+                }
                 break;
             case 3:             // Script start to run. Loading the model.
                 console.log('[CLASSIFIER] Start loading');
