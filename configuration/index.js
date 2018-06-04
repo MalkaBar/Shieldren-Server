@@ -10,7 +10,7 @@ module.exports = {
                 encrypt: false
             }
         },
-        monitor: true
+        monitor: false
     },
     network: {
         port: (process.platform === 'win32') ? 3000 : 80
@@ -18,11 +18,11 @@ module.exports = {
     secret: 'Bar+Lihi+Roie+Omer+Lior',
     Script: {
         executer: "python",
-        path: (process.platform === 'win32') ? "./scripts/ForOmer.py" : "/home/project25/Documents/WhatsApp/WebWhatsapp-Wrapper-master/sample/echo.py"
+        path: (process.platform === 'win32') ? "./scripts/WhatsappSelfTest.py" : "/home/project25/Documents/WhatsApp/WebWhatsapp-Wrapper-master/sample/echo.py"
     },
     Algorithm: {
         executer: "python",
-        path: "./scripts/classify.py"
+        path: (process.platform === 'win32') ? "./scripts/ClassifierSelfTest.py" : "./scripts/classify.py"
     },
     Notification: {
         key: 'b7ueLfyKQPKGCbJ0HMKy9A',
