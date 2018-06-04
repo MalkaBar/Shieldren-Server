@@ -10,16 +10,15 @@ module.exports = {
                 encrypt: false
             }
         },
-        monitor: false
+        monitor: true
     },
     network: {
-        port: 80
+        port: (process.platform === 'win32') ? 3000 : 80
     },
     secret: 'Bar+Lihi+Roie+Omer+Lior',
     Script: {
         executer: "python",
-        //path: "./scripts/ForOmer.py"
-        path: "/home/project25/Documents/WhatsApp/WebWhatsapp-Wrapper-master/sample/echo.py"
+        path: (process.platform === 'win32') ? "./scripts/ForOmer.py" : "/home/project25/Documents/WhatsApp/WebWhatsapp-Wrapper-master/sample/echo.py"
     },
     Algorithm: {
         executer: "python",

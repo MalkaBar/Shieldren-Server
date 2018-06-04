@@ -1,6 +1,6 @@
 var { spawn }      = require('child_process');
 var algoController = require('../controllers/algorithmControler');
-var debug          = require('../configuration').db.monitor;
+var debugMode      = require('../configuration').db.monitor;
 var { Script }     = require('../configuration');
 
 module.exports = class WhatsApp {
@@ -10,14 +10,14 @@ module.exports = class WhatsApp {
         
         algoController.pullChildData(data.child, (err, result) => {
             if (err) {
-                if (debug) console.log('[WHATSAPP] Error: ' + err);
+                if (debugMode) console.log('[WHATSAPP] Error: ' + err);
                 this.socket.emit('qrError', 'Error received. close session. [err = ' + err.message + ']');
                 socket.disconnect(true);
             } else {
                 this.childInfo = result;
                 this.subproccess = spawn(Script.executer, [Script.path, this.childInfo.phoneNumber], { detached: true });
                 this.subproccess.stdout.on('data', (data) => { this.dataReceived(data.toString()); });
-                this.subproccess.stderr.on('data', (data) => { if (debug) console.log('[WHATSAPP] Error: ' + data); });
+                this.subproccess.stderr.on('data', (data) => { if (debugMode) console.log('[WHATSAPP] Error: ' + data); });
                 this.subproccess.on('exit', (data) => { console.log('[WHATSAPP] Close connection for ' + this.uniuqeID); });
             }
         });    
@@ -25,7 +25,7 @@ module.exports = class WhatsApp {
 
     dataReceived(message) {
         try {
-            if (debug) console.log('[WHATSAPP] JSON ARRIVED:' + message);
+            if (debugMode) console.log('[WHATSAPP] JSON ARRIVED:' + message);
             let obj = JSON.parse(message);
             switch (obj.code) {
                 case -1:
@@ -43,13 +43,14 @@ module.exports = class WhatsApp {
                     });                    
                     break;
                 case 3:             //New message received
+                    if (debugMode) console.log('[Whatsapp] message been sent to classifier: ' + JSON.stringify(data));
                     algoController.sentenceRecieved(obj.data);
                     break;
                 case 5:             //Child process start to run
                     this.uniuqeID = obj.seesionID;
                     break;
                 default:
-                    if (debug) console.log('[WHATSAPP] DEBUG:' + message);
+                    if (debugMode) console.log('[WHATSAPP] DEBUG:' + message);
             }
         }
         catch (err) {

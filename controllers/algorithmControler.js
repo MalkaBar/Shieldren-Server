@@ -2,7 +2,6 @@ var db = require('../core/db');
 
 module.exports = {
     sentenceRecieved: (data) => {
-        console.log('[Whatsapp] message been sent to classifier: ' + JSON.stringify(data));
         classifier.clasiffy(data);
     },
     qrBeenScanned: (cid, callback) => {

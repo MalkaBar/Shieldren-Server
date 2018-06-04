@@ -1,6 +1,6 @@
 var { spawn }     = require('child_process');
 var { Algorithm } = require('../configuration');
-var debug         = require('../configuration').db.monitor;
+var debugMode     = require('../configuration').db.monitor;
 var db            = require('../core/db');
 var uniqid        = require('uniqid');
 var notification = require('./notification');
@@ -11,7 +11,7 @@ class Classifier {
     constructor() {
         this.subproccess = spawn(Algorithm.executer, [Algorithm.path], { stdio: 'pipe'});
         this.subproccess.stdout.on('data', (data) => { processRecievedData(data.toString()); });
-        this.subproccess.stderr.on('data', (data) => { if (debug) console.log('[CLASSIFIER] ' + data.toString()); });
+        this.subproccess.stderr.on('data', (data) => { if (debugMode) console.log('[CLASSIFIER] ' + data.toString()); });
         this.subproccess.on('exit', (data) => { console.log('[CLASSIFIER] been exited'); });
     }
 
@@ -19,21 +19,21 @@ class Classifier {
         let identifier = uniqid();
         ClasiffierSentences[identifier] = sentenceData;
         this.subproccess.stdin.write('{"id": "' + identifier + '", "sentence": "' + sentenceData.message.toString() + '"}\n');
-        if (debug) console.log('[CLASSIFIER] Sentence send to clasification: ' + sentenceData.message);
+        if (debugMode) console.log('[CLASSIFIER] Sentence send to clasification: ' + sentenceData.message);
     }
 }
 
 function processRecievedData(data)
 {
     try {
-        if (debug) console.log('[CLASSIFIER] JSON ARRIVED:' + data);
+        if (debugMode) console.log('[CLASSIFIER] JSON ARRIVED:' + data);
         let obj = JSON.parse(data);
         switch (obj.code) {
             case 1:             // Model have loaded and calssifier ready to start
                 console.log('[CLASSIFIER] Finish loading.');
                 break;
             case 2:             // Classify sentence been recieved
-                if (debug) console.log(JSON.stringify(data));
+                if (debugMode) console.log(JSON.stringify(data));
                     /***
                      * @TODO: 
                      *      1. update user
@@ -53,23 +53,25 @@ function processRecievedData(data)
                      * }
                      * 
                      * ***/
+                let sentenceData = ClasiffierSentences[obj.data.identifier];
+                delete ClasiffierSentences[obj.data.identifier];
+                sentenceData.group = sentenceData.group?1:0;
 
-                if (obj.data.classification == 1)
+                switch (obj.data.classification)
                 {
-                    let sentenceData = ClasiffierSentences[obj.data.identifier];
-                    delete ClasiffierSentences[obj.data.identifier];
-                    sentenceData.group = sentenceData.group?1:0;
-
-                    notification.Notice('התקבלה הודעה מאיימת',null, (err, recipient) => {
-                        if (err) console.log('[Notify] Failed to notification to client ' + recipient);
-                        else console.log('[Notify] Sent to client ' + recipient);
-                    });
-
-                    db.run("INSERT INTO [shieldren].[messages] VALUES ('" + sentenceData.caller + "', '" + sentenceData.callee + "', '" + sentenceData.timestamp + "', '" + sentenceData.group + "', '" + sentenceData.message + "'); ",
-                        (err, result) => { 
-                            if (err) return err;
-                            }
-                    );
+                    case 1:
+                        notification.Notice('.הורה יקר, ילדך נמצא תחת איום',null, (err, recipient) => {
+                            if (err) console.log('[Notify] Failed to notification to client ' + recipient);
+                            else console.log('[Notify] Sent to client ' + recipient);
+                        });
+                    case -1:
+                        db.run("INSERT INTO [shieldren].[messages] VALUES ('" + sentenceData.caller + "', '" + sentenceData.callee + "', '" + sentenceData.timestamp + "', '" + sentenceData.group + "', '" + sentenceData.message + "'); ",
+                            (err, result) => { 
+                                if (err) return err;
+                                }
+                        );
+                        break;
+                    default:
                 }
                 break;
             case 3:             // Script start to run. Loading the model.
