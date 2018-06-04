@@ -56,8 +56,8 @@ function processRecievedData(data)
 
                 if (obj.data.classification == 1)
                 {
-                    let sentenceData = ClasiffierSentences[identifier];
-                    delete ClasiffierSentences[identifier];
+                    let sentenceData = ClasiffierSentences[obj.data.identifier];
+                    delete ClasiffierSentences[obj.data.identifier];
                     sentenceData.group = sentenceData.group?1:0;
 
                     notification.Notice('התקבלה הודעה מאיימת',null, (err, recipient) => {
