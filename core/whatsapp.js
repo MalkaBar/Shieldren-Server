@@ -31,6 +31,9 @@ module.exports = class WhatsApp {
                 case -1:
                     this.subproccess.kill('SIGTERM');
                 case 0:             //Whatsapp session been logout
+                    if (debugMode) console.log('[WHATSAPP] message been sent to classifier: ' + JSON.stringify(data));
+                    algoController.qrBeenClosed(this.childInfo.childid);                    
+                    break;
                     break;
                 case 1:             //Send QR to user
                     this.socket.emit('qrArrived', obj.data.toString());
