@@ -17,15 +17,7 @@ module.exports = class WhatsApp {
                 let buffer = "";
                 this.childInfo = result;
                 this.subproccess = spawn(Script.executer, [Script.path, this.childInfo.phoneNumber], { detached: true });
-                this.subproccess.stdout.on('data', (data) => {
-                    let char = this.subproccess.stdout.read(1);
-                    if (char == '\n')
-                    {
-                        dataReceived(bufer);
-                        buffer = "";
-                    }
-                    else buffer += char;
-                }); 
+                this.subproccess.stdout.on('data', (data) => { dataReceived(data.toString()); }); 
                 this.subproccess.stderr.on('data', (data) => { if (debugMode) errorMessage('Error: ' + data); });
                 this.subproccess.on('exit', (data) => { errorMessage('Close connection for ' + this.uniuqeID); });
             }
