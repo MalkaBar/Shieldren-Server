@@ -6,37 +6,47 @@ var { Script }     = require('../configuration');
 module.exports = class WhatsApp {
     constructor(socket, data) {
         this.uniuqeID = null;
+        this.qrString = "";
         this.socket = socket;
         
         algoController.pullChildData(data.child, (err, result) => {
             if (err) {
-                if (debugMode) console.log('[WHATSAPP] Error: ' + err);
+                if (debugMode) errorMessage(err);
                 this.socket.emit('qrError', 'Error received. close session. [err = ' + err.message + ']');
-                socket.disconnect(true);
             } else {
+                let buffer = "";
                 this.childInfo = result;
                 this.subproccess = spawn(Script.executer, [Script.path, this.childInfo.phoneNumber], { detached: true });
-                this.subproccess.stdout.on('data', (data) => { this.dataReceived(data.toString()); });
-                this.subproccess.stderr.on('data', (data) => { if (debugMode) console.log('[WHATSAPP] Error: ' + data); });
-                this.subproccess.on('exit', (data) => { console.log('[WHATSAPP] Close connection for ' + this.uniuqeID); });
+                this.subproccess.stdout.on('data', (data) => {
+                    let char = this.subproccess.stdout.read(1);
+                    if (char == '\n')
+                    {
+                        dataReceived(bufer);
+                        buffer = "";
+                    }
+                    else buffer += char;
+                }); 
+                this.subproccess.stderr.on('data', (data) => { if (debugMode) errorMessage('Error: ' + data); });
+                this.subproccess.on('exit', (data) => { errorMessage('Close connection for ' + this.uniuqeID); });
             }
         });    
     }
 
     dataReceived(message) {
         try {
-            if (debugMode) console.log('[WHATSAPP] JSON ARRIVED:' + message);
+            if (debugMode) debugMessage("Json arrived " + message)
             let obj = JSON.parse(message);
             switch (obj.code) {
                 case -1:
                     this.subproccess.kill('SIGTERM');
                 case 0:             //Whatsapp session been logout
-                    if (debugMode) console.log('[WHATSAPP] message been sent to classifier: ' + JSON.stringify(data));
-                    algoController.qrBeenClosed(this.childInfo.childid);                    
-                    break;
+                    algoController.qrBeenClosed(this.childInfo.childid);
                     break;
                 case 1:             //Send QR to user
-                    this.socket.emit('qrArrived', obj.data.toString());
+                    this.qrString += obj.data.chunk;
+                    if (obj.data.index === -1) {
+                        this.socket.emit('qrArrived', this.qrString);
+                    }
                     break;
                 case 2:             //Notify user about successful scan
                     algoController.qrBeenScanned(this.childInfo.childid, (err) => {
@@ -46,19 +56,24 @@ module.exports = class WhatsApp {
                     });                    
                     break;
                 case 3:             //New message received
-                    if (debugMode) console.log('[Whatsapp] message been sent to classifier: ' + JSON.stringify(data));
+                if (debugMode) debugMessage("Message been sent to classifier: " + JSON.stringify(data))
                     algoController.sentenceRecieved(obj.data);
                     break;
                 case 5:             //Child process start to run
+                    normalMessage('Start Whatsapp session [' + obj.seesionID + ']')
                     this.uniuqeID = obj.seesionID;
                     break;
                 default:
-                    if (debugMode) console.log('[WHATSAPP] DEBUG:' + message);
+                    if (debugMode) debugMessage('Default: ' + message);
             }
         }
         catch (err) {
-            console.log('[WHATSAPP] Error: ' + err);
+            errorMessage(err);
             this.socket.emit('qrError', 'Error received. close session. [err = ' + err.message + ']');
         }
     }
 };
+
+function debugMessage(message) { console.log("\033[0;35m[WHATSAPP DEBUG]\033[0m " + message)}
+function errorMessage(message) { console.log("\033[0;31m[WHATSAPP ERROR]\033[0m " + message)}
+function normalMessage(message) { console.log("\033[0;33m[WHATSAPP ERROR]\033[0m " + message)}
