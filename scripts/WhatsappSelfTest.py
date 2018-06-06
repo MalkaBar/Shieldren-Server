@@ -114,16 +114,7 @@ def GenerateQR():
     N/4/LeOsINjTlyRx0uSd6ONKqmQMHwUQ/we7x1l3BuCLcAAAAABJRU5ErkJggg==
     """
     qr = qr.replace('\n    ','').strip()
-    chunk_size = 1000
-    for index in range(0,(len(qr)/chunk_size+1)):
-        chunk = qr[((index) * chunk_size):((index) * chunk_size)+chunk_size]
-        data['chunk'] = chunk
-        data['len'] = len(chunk)
-        if (index == (len(qr)/chunk_size)): 
-            data['index'] = -1
-        else:
-            data['index'] = index
-        JsonPrint(1, 1234, "QR", data)
+    JsonPrint(1, 1234, "QR", qr)
 
 def Main():
     JsonPrint(5, 1234, "Start")

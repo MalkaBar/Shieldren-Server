@@ -3,10 +3,10 @@ var algoController = require('../controllers/algorithmControler');
 var debugMode      = require('../configuration').db.monitor;
 var { Script }     = require('../configuration');
 
-module.exports = class WhatsApp {
+module.exports =
+class WhatsApp {
     constructor(socket, data) {
         this.uniuqeID = null;
-        this.qrString = "";
         this.socket = socket;
         
         algoController.pullChildData(data.child, (err, result) => {
@@ -17,17 +17,17 @@ module.exports = class WhatsApp {
                 var buffer = "";
                 this.childInfo = result;
                 this.subproccess = spawn(Script.executer, [Script.path, this.childInfo.phoneNumber], { detached: true });
-                this.subproccess.stdout.on('data', (data) => { 
-                    try {
-                        let json = JSON.parse(data.toString());
-                        dataReceived(json);
+                this.subproccess.stdout.on('data', (data) => {
+                    try { 
+                        var jsonData = JSON.parse(data.toString());
+                        this.dataReceived(jsonData);
                         buffer = "";
-                    } catch {
+                    } catch (err) {
                         try {
-                            let json = JSON.parse(buffer + data.toString());
-                            dataReceived(json);
+                            jsonData = JSON.parse(buffer + data.toString());
+                            this.dataReceived(jsonData);
                             buffer = "";
-                        } catch {
+                        } catch (err){
                             buffer += data.toString();
                         }
                     }
@@ -35,10 +35,11 @@ module.exports = class WhatsApp {
                 this.subproccess.stderr.on('data', (data) => { if (debugMode) errorMessage('Error: ' + data); });
                 this.subproccess.on('exit', (data) => { errorMessage('Close connection for ' + this.uniuqeID); });
             }
-        });    
+        });
     }
 
     dataReceived(json) {
+        console.log('[Whatsapp] Data = ' + json.toString());
         switch (json.code) {
             case -1:
                 this.subproccess.kill('SIGTERM');
@@ -46,10 +47,7 @@ module.exports = class WhatsApp {
                 algoController.qrBeenClosed(this.childInfo.childid);
                 break;
             case 1:             //Send QR to user
-                this.qrString += json.data.chunk;
-                if (json.data.index === -1) {
-                    this.socket.emit('qrArrived', this.qrString);
-                }
+                this.socket.emit('qrArrived', json.data);
                 break;
             case 2:             //Notify user about successful scan
                 algoController.qrBeenScanned(this.childInfo.childid, (err) => {
