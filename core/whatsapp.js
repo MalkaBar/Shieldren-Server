@@ -8,7 +8,7 @@ class WhatsApp {
     constructor(socket, data) {
         this.uniuqeID = null;
         this.socket = socket;
-        
+
         algoController.pullChildData(data.child, (err, result) => {
             if (err) {
                 if (debugMode) errorMessage(err);
@@ -18,7 +18,7 @@ class WhatsApp {
                 this.childInfo = result;
                 this.subproccess = spawn(Script.executer, [Script.path, this.childInfo.phoneNumber], { detached: true });
                 this.subproccess.stdout.on('data', (data) => {
-                    try { 
+                    try {
                         var jsonData = JSON.parse(data.toString());
                         this.dataReceived(jsonData);
                         buffer = "";
@@ -62,7 +62,7 @@ class WhatsApp {
                 break;
             case 5:             //Child process start to run
                 normalMessage('Start Whatsapp session [' + json.seesionID + ']')
-                this.uniuqeID = json.seesionID;
+                this.uniuqeID = json.sessionID;
                 break;
             default:
                 if (debugMode) debugMessage('Default: ' + message);
