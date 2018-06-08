@@ -19,13 +19,11 @@ class WhatsApp {
                 this.subproccess = spawn(Script.executer, [Script.path, this.childInfo.phoneNumber], { detached: true });
                 this.subproccess.stdout.on('data', (data) => {
                     try {
-                        var jsonData = JSON.parse(data.toString());
-                        this.dataReceived(jsonData);
+                        this.dataReceived(JSON.parse(data.toString()));
                         buffer = "";
                     } catch (err) {
                         try {
-                            jsonData = JSON.parse(buffer + data.toString());
-                            this.dataReceived(jsonData);
+                            this.dataReceived(JSON.parse(buffer + data.toString()));
                             buffer = "";
                         } catch (err){
                             buffer += data.toString();
@@ -70,6 +68,6 @@ class WhatsApp {
     }
 };
 
-function debugMessage(message) { console.log("\033[0;35m[WHATSAPP DEBUG]\033[0m " + message)}
-function errorMessage(message) { console.log("\033[0;31m[WHATSAPP ERROR]\033[0m " + message)}
+function debugMessage(message)  { console.log("\033[0;35m[WHATSAPP DEBUG]\033[0m " + message)}
+function errorMessage(message)  { console.log("\033[0;31m[WHATSAPP ERROR]\033[0m " + message)}
 function normalMessage(message) { console.log("\033[0;33m[WHATSAPP ERROR]\033[0m " + message)}
