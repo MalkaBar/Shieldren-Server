@@ -117,22 +117,23 @@ def GenerateQR():
     JsonPrint(1, 1234, "QR", qr)
 
 def Main():
+    gapBetweenJsons = 3
     JsonPrint(5, 1234, "Start")
-    time.sleep(2)
+    time.sleep(gapBetweenJsons)
     GenerateQR()
-    time.sleep(2)
+    time.sleep(gapBetweenJsons)
     JsonPrint(2, 1234, "Scan Succeeded")
-    time.sleep(2)
+    time.sleep(gapBetweenJsons)
     while True:
         paramTime = time.strftime("%Y-%m-%d %H:%M:%S")
         data = {
             "caller": '972544665536',
             "callee": '0524592005',
             "timestamp": paramTime,
-            "message": 'I want a static message',
+            "message": 'מה המצב? סמיילי מאוהב',
             "group": True
         }
         JsonPrint(2, 1234, "userMessage", data)
-        time.sleep(5)
+        time.sleep(gapBetweenJsons)
 
 Main()

@@ -127,13 +127,6 @@ router.post('/login', function (req, res, next) {
             delete result.password;
             delete result.salt;
 
-            /*
-            var date = new Date();
-            req.app.locals.loginUsers[result.id] = date.setTime(date.getTime() + 1);
-
-            res.status(200).json(result);
-            */
-
            let token = jwt.sign({ id: result.id }, require('../configuration').secret, {
                expiresIn: 86400 // expires in 24 hours
            });

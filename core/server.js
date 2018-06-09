@@ -34,6 +34,7 @@ app.engine('html', require('ejs').renderFile);
 
 //  Routes
 app.use('/api/child', require('../routes/child'));
+app.use('/api/parent', require('../routes/parent'));
 app.use('/api',       require('../routes/api'));
 app.use('/',          require('../routes/public'));
 
