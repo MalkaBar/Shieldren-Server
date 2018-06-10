@@ -45,12 +45,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (attributes)
             {
-                let command = "UPDATE [shieldren].[children] SET ";
+                let command = "UPDATE [shieldren].[users] SET ";
                 Object.keys(attributes).forEach(key => {
-                    if (key != 'id')
-                        command += key.toString() + " " + attributes[key] + " ";
+                        command += key.toString() + " = '" + attributes[key] + "', ";
                 });
-                command += "WHERE id = " + _parent + ";";
+                command = command.slice(0, -2) + " WHERE id = " + _parent + ";";
 
                 db.run(command.toString(), (err, result) => {
                     if (err) { return reject(err); }

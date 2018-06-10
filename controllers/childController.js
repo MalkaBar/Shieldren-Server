@@ -1,13 +1,14 @@
 var db = require('../core/db');
 
 module.exports = {
-    get: (pid, callback) => {
-        if (!pid)    return callback(new Error('ERR_INVALID_INPUT'), null);
-
-        db.run("SELECT * FROM [shieldren].[children] WHERE parentid='" + pid + "';", (err, result) => { callback(err, result); } );
-        
+    get: (parent, child, callback) => {
+        if (!child)    return callback(new Error('ERR_INVALID_INPUT'), null);
+        db.run("SELECT * FROM [shieldren].[children] WHERE childid = '" + child + "' AND parentid = '" + parent + "';",
+        (err, result) => {
+            return callback(err, result);
+        });
     },
-    put: (child, callback) => {
+    post: (child, callback) => {
         if (!child.pid)   return callback(new Error('ERR_INVALID_INPUT'), null);
         if (!child.phone) return callback(new Error('ERR_INVALID_INPUT'), null);
         if (!child.name)  return callback(new Error('ERR_INVALID_INPUT'), null);
@@ -25,19 +26,34 @@ module.exports = {
             }
         );
     },
-    getByChild: (parentID, childID, callback) => {
-        if (!childID)    return callback(new Error('ERR_INVALID_INPUT'), null);
-        db.run("SELECT * FROM [shieldren].[children] WHERE childid = '" + childID + "' AND parentid = '" + parentID + "';",
-        (err, result) => {
-            return callback(err, result);
+    delete: (parent, child) => {
+        if (!child)  return callback(new Error('ERR_INVALID_INPUT'), null);
+        return promise = new Promise((resolve, reject) => {
+            db.run("DELETE FROM [shieldren].[children] WHERE parentid = " + parent + " AND  childid = " + child + ";",
+            (err, result) => {
+                if (err) return reject(err);
+                else resolve(result);
+            });
         });
     },
-    delete: (childID, callback) => {
-        if (!childID)    return callback(new Error('ERR_INVALID_INPUT'), null);
-        callback(new Error('FUNCTION NOT IMPLIMENTED'), null);
-    },
-    update: (childID, callback) => {
-        if (!childID)    return callback(new Error('ERR_INVALID_INPUT'), null);
-        callback(new Error('FUNCTION NOT IMPLIMENTED'), null);
+    update: (parent, child, attributes) => {
+        return new Promise((resolve, reject) => {
+            if (attributes)
+            {
+                let command = "UPDATE [shieldren].[children] SET ";
+                Object.keys(attributes).forEach(key => {
+                        command += key.toString() + " = '" + attributes[key] + "', ";
+                });
+                command = command.slice(0, -2) + " WHERE parentid = " + parent + " AND childid = " + child + ";";
+
+                db.run(command.toString(), (err, result) => {
+                    if (err) { return reject(err); }
+                    else { return resolve(null); }
+                });
+            }
+            else {
+                reject(new Error('INVALID_REQUEST'));
+            }
+        });    
     }
 }

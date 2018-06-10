@@ -25,6 +25,7 @@
     "socket.io": "^2.1.0",
     "tedious": "^2.6.2",
     "uniqid": "^4.1.1",
+    "unique-string": "^1.0.0",
     "urban-airship-push": "^0.1.0",
     "validator": "^9.4.1"
   },
