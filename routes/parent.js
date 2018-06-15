@@ -10,14 +10,16 @@ var crypto      = require('crypto');
 router.use(function (req, res, next) {
     try {
         jwt.verify(req.headers['x-auth-token'], require('../configuration').secret, (err, token) => {
-            if (err) res.status(403).json({"status": -1, "message": "Forbidden"});
+            if (err) {
+                returnJson(res, 403, "Forbidden", null);
+            }
             else {
                 req.userID = token.id.toString();
                 next();
             }
         });
     } catch (err) {
-        res.status(403).json({"status": -1, "message": "Forbidden"});
+        returnJson(res, 403, "Forbidden", null);
     } 
 });
 
@@ -27,13 +29,13 @@ router.get('/:pid', function (req, res, next) {
         .then((user) => {
             controller.getChildren(user.id).then((children) => {
                 user['children'] = children;
-                res.status(200).json(user);
+                returnJson(res, 200, null, user);
             }).catch((err) => {
-                res.status(200).json(user);
+                returnJson(res, 200, null, user);
             });
         })
         .catch((err) => {
-            res.status(500).json({ "status": -1, "message": err.message});
+            returnJson(res, 500, err.message, null);
         })
 });
 
@@ -79,13 +81,13 @@ router.put('/:pid', function (req, res, next) {
         .then(() => {
             controller.get(req.params.pid)
                 .then((user) => {
-                    res.status(200).json(user);
+                    returnJson(res,200,"Success",user);
                 }).catch((err) => {
-                    res.status(500).json({ "status": -1, "message": err.message});
+                    returnJson(res, 500, err.message, null);
                 });
         })
         .catch((err) => {
-            res.status(500).json({ "status": -1, "message": err.message});
+            returnJson(res, 500, err.message, null);
         });
 });
 

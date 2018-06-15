@@ -25,7 +25,7 @@ var router         = express.Router();
 router.post('/register', function (req, res, next) {
     try { 
         //  Check if all required arguments are sent
-        if (!req.body.email)    throw Error('ERR_INVALID_INPUT');
+     if (!req.body.email)    throw Error('ERR_INVALID_INPUT');
         if (!req.body.first)    throw Error('ERR_INVALID_INPUT');
         if (!req.body.last)     throw Error('ERR_INVALID_INPUT');
         if (!req.body.password) throw Error('ERR_INVALID_INPUT');
@@ -45,8 +45,8 @@ router.post('/register', function (req, res, next) {
         }, (err, data) => {
             if (err) {
                 console.log('\033[0;31m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE NOT BEEN ADDED [' + err + ']');
-                if (err.message === 'ERR_USER_EXIST') { res.status(409).json({'reason': err.message}) }
-                else { res.status(500).json({'reason': err.message}) } ;
+                if (err.message === 'ERR_USER_EXIST') { returnJson(res, 409, err.message, null); }
+                else { returnJson(res, 500, err.message, null); }
              }
             else {
                 console.log('\033[0;32m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE BEEN ADDED');
@@ -55,18 +55,12 @@ router.post('/register', function (req, res, next) {
                 let token = jwt.sign({ id: uid }, require('../configuration').secret, {
                     expiresIn: 86400 // expires in 24 hours
                 });
-                res.status(200).json({'uid': uid,  'token': token});
-
-                /*
-                var date = new Date();
-                req.app.locals.loginUsers[uid] = date.setTime(date.getTime() + 1);
-                res.status(200).json({'auth': true, 'uid': uid,  'token': });
-                */
+                returnJson(res, 200, "Success", {'uid': uid,  'token': token});
             }
         });
     } catch(err) {
         console.log('\033[0;31m[SERVER]\033[0m REGISTER: ' + req.body.email + ' HAVE NOT BEEN ADDED [' + err + ']');
-        res.status(400).json({'reason': err.message});
+        returnJson(res, 500, err.message, null);
     }
 });
 
@@ -103,13 +97,13 @@ router.post('/login', function (req, res, next) {
             //Get Error while pulling data - SQL server ERROR
             if (err) {
                 console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
-                return res.sendStatus(400);
+                return returnJson(res, 400, err.message, null);;
             }
 
             //Get wrong answer from SQL
             if (result.length != 1) {
                 console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [ERR_WRONG_QUERY]');
-                return res.sendStatus(403);
+                return returnJson(res, 500, "Internal Error", null);
             }
 
             //process given password with salt
@@ -122,7 +116,7 @@ router.post('/login', function (req, res, next) {
             //CHECK IF PASSWORD IS WRONG
             if (result.password !== password) {
                 console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
-                return res.sendStatus(403);
+                return returnJson(res, 403, "Login Failed", null);
             }
             delete result.password;
             delete result.salt;
@@ -131,11 +125,11 @@ router.post('/login', function (req, res, next) {
                expiresIn: 86400 // expires in 24 hours
            });
            result.token = token;
-           res.status(200).json(result);
+           returnJson(res, 200, "Success", result);
         });
     } catch (err) {
         console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
-        res.status(400).json({'reason': err.message});
+        return returnJson(res, 400, err.message, null);
     }
 });
 

@@ -8,15 +8,13 @@ var jwt        = require('jsonwebtoken');
 router.use((req, res, next) => {
     try {
         jwt.verify(req.headers['x-auth-token'], require('../configuration').secret, (err, token) => {
-            if (err) res.status(403).json({"status": 403, "message": "Forbidden"});
+            if (err) returnJson(res, 403, "Forbidden", null);
             else {
                 req.userID = token.id.toString();
                 next();
             }
         });
-    } catch (err) {
-        res.status(403).json({"status": 403, "message": "Forbidden"});
-    } 
+    } catch (err) { if (err) returnJson(res, 403, "Forbidden", null); } 
 });
 
 router.post('/', (req, res, next) => {
@@ -41,31 +39,31 @@ router.post('/', (req, res, next) => {
             if (err)
             {
                 console.log('\033[0;31m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE NOT BEEN ADDED [' + err + ']');
-                if (err.message === 'ERR_CHILD_EXIST') { return res.status(409).json({"status": 409, "message": err.message}) }
-                else { return res.status(500).json({"status": 500, "message": err.message}) } ;
+                if (err.message === 'ERR_CHILD_EXIST') { return returnJson(res, 409, err.message, null); }
+                else { return returnJson(res, 500, err.message, null); } ;
             } 
             console.log('\033[0;32m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE BEEN ADDED');
-            return res.status(200).json(result[0]);
+            return returnJson(res, 200, "Success", result[0]);
         });
     } catch (err) {
         console.log('\033[0;31m[SERVER]\033[0m CHILD: ' + req.body.childName + ' HAVE NOT BEEN ADDED [' + err + ']');
-        return res.status(400).json({"status": 400, "message": err.message});
+        return returnJson(res, 500, err.message, null);
     }
 });
 
 router.get('/:child', (req, res, next) => {
-    if (!req.params.child) { return res.status(400).json({"status": 400, "message": "Bad Request"}); }
+    if (!req.params.child) { return returnJson(res, 400, "Bad Request", null); }
     controller.get(req.userID, req.params.child, (err, result) => {
-        if (err) { return res.status(500).json({"status": 500, "message": err.message}); }
-        return res.status(200).json(result[0]);
+        if (err) { return returnJson(res, 500, err.message, null); }
+        return returnJson(res, 200, "Success", result[0]);
     });
 });
 
 router.delete('/:child', (req, res, next) => {
-    if (!req.params.child) { return res.status(400).json({"status": 400, "message": "Bad Request"}); }
+    if (!req.params.child) { return returnJson(res, 400, "Bad Request", null); }
     controller.delete(req.userID, req.params.child)
-        .then((result) => { return res.status(200).json({"status": 200, "message": result}); })
-        .catch((err) => { return res.status(500).json({"status": 500, "message": err.message}); });
+        .then((result) => { return returnJson(res, 200, "Success", result); })
+        .catch((err) => { return returnJson(res, 500, err.message, null); });
 });
 
 router.put('/:child', (req, res, next) => {
@@ -92,7 +90,7 @@ router.put('/:child', (req, res, next) => {
             });
         })
         .catch((err) => {
-            res.status(500).json({ "status": -1, "message": err.message});
+            returnJson(res, 500, err.message, null);
         });
 });
 

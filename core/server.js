@@ -8,6 +8,7 @@ var bodyParser   = require('body-parser');
 var { network }  = require('../configuration');
 
 global.classifier = require('./classifier');
+global.returnJson = function (res, status, message, data) { return res.status(status).json({"status": status, "message": message, "data": data}); };
 
 morgan(function (tokens, req, res) {
   return [
