@@ -2,7 +2,6 @@ var express    = require('express');
 var router     = express.Router();
 var controller = require('../controllers/childController');
 var validator  = require('validator');
-var path       = require('path');
 var jwt        = require('jsonwebtoken');
 
 router.use((req, res, next) => {

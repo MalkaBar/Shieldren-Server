@@ -2,7 +2,6 @@ var express    = require('express');
 var router     = express.Router();
 var controller = require('../controllers/parentController');
 var validator  = require('validator');
-var path       = require('path');
 var jwt        = require('jsonwebtoken');
 var identifier = require('unique-string');
 var crypto      = require('crypto');

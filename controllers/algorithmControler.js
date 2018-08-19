@@ -7,13 +7,13 @@ module.exports = {
     qrBeenScanned: (cid, callback) => {
         if (!cid || cid <= 0) return callback(new Error('ERR_INVALID_INPUT'));
         db.run("UPDATE [shieldren].[children] SET qrStatus = 1 WHERE childid = " + cid + ";",
-            (err, result) => { callback(err); }
+            (err, result) => { callback(err, result); }
         );
     },
     qrBeenClosed: (cid) => {
         if (cid > 0)
             db.run("UPDATE [shieldren].[children] SET qrStatus = 0 WHERE childid = " + cid + ";",
-                (err, result) => { }
+                (err, result) => { cllaback(err, result); }
             );
     },
     pullChildData: (cid, callback) => {

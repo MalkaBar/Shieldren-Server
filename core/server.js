@@ -1,5 +1,3 @@
-
-var path         = require('path');
 var cors         = require('cors');
 var morgan       = require('morgan');
 var express      = require('express');
@@ -8,7 +6,7 @@ var bodyParser   = require('body-parser');
 var { network }  = require('../configuration');
 
 global.classifier = require('./classifier');
-global.returnJson = function (res, status, message, data) { return res.status(status).json({"status": status, "message": message, "data": data}); };
+global.returnJson = function (res, status, message, data) { res.status(status).json({"status": status, "message": message, "data": data}); };
 
 morgan(function (tokens, req, res) {
   return [
@@ -34,6 +32,7 @@ app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
 //  Routes
+app.use("/api/statistics", require('../routes/statistics'));
 app.use('/api/child', require('../routes/child'));
 app.use('/api/parent', require('../routes/parent'));
 app.use('/api',       require('../routes/api'));

@@ -68,6 +68,6 @@ class WhatsApp {
     }
 };
 
-function debugMessage(message)  { console.log("\033[0;35m[WHATSAPP DEBUG]\033[0m " + message)}
-function errorMessage(message)  { console.log("\033[0;31m[WHATSAPP ERROR]\033[0m " + message)}
-function normalMessage(message) { console.log("\033[0;33m[WHATSAPP ERROR]\033[0m " + message)}
+function debugMessage(message)  { console.log("[\x1b[35mWHATSAPP\x1b[0m] \x1b[36mDEBUG\x1b[0m: " + message); }
+function errorMessage(message)  { console.log("[\x1b[35mWHATSAPP\x1b[0m] \x1b[36mERROR\x1b[0m: " + message); }
+function normalMessage(message) { console.log("[\x1b[35mWHATSAPP\x1b[0m] Message: "              + message); }
