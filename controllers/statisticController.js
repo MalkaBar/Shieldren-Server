@@ -20,9 +20,17 @@ Statistics.prototype.verify = (_parentID, _childID) => {
     });
 }
 
-Statistics.prototype.get = function (_requestedPeriod, _childReceiverPhone) {
+Statistics.prototype.get = function (_childReceiverPhone, _startDate, _endDate) {
     return new Promise(function(resolve, reject) {
-        db.run("SELECT timestamp, count(*) as 'count' FROM [shieldren].[messages] WHERE reciever = '" + _childReceiverPhone + "' GROUP BY timestamp;", function (err, data) {
+        let _request = [];
+            _request.push("SELECT *");
+            _request.push("FROM (SELECT reciever, convert(varchar, timestamp, 103) AS date, count(*) AS count");
+            _request.push("FROM [shieldren].[messages]");
+            _request.push("WHERE reciever = '" + _childReceiverPhone + "'");
+            _request.push("GROUP BY reciever, convert(varchar, timestamp, 103)) AS pre");
+ //           _request.push("WHERE convert(varchar, pre.date, 103) = convert(varchar, '" + _startDate + "', 103);");
+
+        db.run(_request.join(" ").toString(), function (err, data) {
             if (err) reject(err);
             else resolve(data);
         });
