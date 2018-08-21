@@ -16,11 +16,11 @@ router.use((req, res, next) => {
 });
 
 router.get("/:id/:start/:end", (req, res, next) => {
-    if (req.params.days < 1) { return returnJson(res, 400, "Error", new Error("Invalid data received.")); }
-    if (req.params.id < 1) { return returnJson(res, 400, "Error", new Error("Invalid phone number.")); }
+    if (!req.params.start || !req.params.end) { return returnJson(res, 400, "Error","Invalid data received."); }
+    if (!req.params.id || req.params.id < 1) { return returnJson(res, 400, "Error", "Invalid child number."); }
+    if (new Date(req.params.start) > new Date(req.params.end)) { return returnJson(res, 400, "Error", "Last date cant be smaller then start date."); }
     controller.verify(req.userID, req.params.id)
         .then((child) => {
-           // child.phoneNumber = "0000000000";
             controller.get(child.phoneNumber, req.params.start, req.params.end)
                 .then((data) => { return returnJson(res, 200, "Success", data); })
                 .catch((err) => { return returnJson(res, 500, "Internal Error", err); });
