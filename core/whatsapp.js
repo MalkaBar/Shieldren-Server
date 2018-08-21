@@ -42,6 +42,10 @@ class WhatsApp {
                 this.subproccess.kill('SIGTERM');
             case 0:             //Whatsapp session been logout
                 algoController.qrBeenClosed(this.childInfo.childid);
+                notification.Notice('.הורה יקר, ילדך התנתק מהמערכת, על כן ילדך אינו מוגן',null, (err, recipient) => {
+                    if (err) console.log('[Notify] Failed to notification to client ' + recipient);
+                    else console.log('[Notify] Sent to client ' + recipient);
+                 });
                 break;
             case 1:             //Send QR to user
                 this.socket.emit('qrArrived', json.data);

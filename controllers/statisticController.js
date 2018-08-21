@@ -37,4 +37,17 @@ Statistics.prototype.get = function (_childReceiverPhone, _startDate, _endDate) 
     });
 }
 
+Statistics.prototype.last = function(_childReceiverPhone, _last_X_sentences) {
+    return new Promise(function(resolve, reject) {
+        let _request = [];
+            _request.push("SELECT TOP " + _last_X_sentences + "*");
+            _request.push("FROM [shieldren].[messages]");
+            _request.push("WHERE reciever = '" + _childReceiverPhone + "';");
+        db.run(_request.join(" ").toString(), function (err, data) {
+            if (err) reject(err);
+            else resolve(data);
+        });
+    });
+}
+
 module.exports = new Statistics;

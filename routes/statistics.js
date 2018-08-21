@@ -15,6 +15,20 @@ router.use((req, res, next) => {
     } catch (err) { if (err) returnJson(res, 403, "Forbidden", null); } 
 });
 
+router.get("/last/:id/:count", (req, res, next) => {
+    if (!req.params.count || req.params.count < 1) { return returnJson(res, 400, "Error","Invalid data received."); }
+    if (!req.params.id || req.params.id < 1) { return returnJson(res, 400, "Error", "Invalid child number."); }
+
+    controller.verify(req.userID, req.params.id)
+        .then((child) => {
+            controller.last(child.phoneNumber, req.params.count)
+                .then((data) => { return returnJson(res, 200, "Success", data); })
+                .catch((err) => { return returnJson(res, 500, "Internal Error", err); });
+        }).catch((err) => {
+            return returnJson(res, 500, "Internal Error", err);
+        }); 
+});
+
 router.get("/:id/:start/:end", (req, res, next) => {
     if (!req.params.start || !req.params.end) { return returnJson(res, 400, "Error","Invalid data received."); }
     if (!req.params.id || req.params.id < 1) { return returnJson(res, 400, "Error", "Invalid child number."); }
@@ -26,8 +40,7 @@ router.get("/:id/:start/:end", (req, res, next) => {
                 .catch((err) => { return returnJson(res, 500, "Internal Error", err); });
         }).catch((err) => {
             return returnJson(res, 500, "Internal Error", err);
-        });
-    
+        });    
 });
 
 module.exports = router;
