@@ -5,13 +5,18 @@ const { db }     = require('../configuration');
 var connection = new Connection(db.config);
 
 connection.on('connect', (err) => {
-    if (err) { return console.log('\033[0;31m[SQL SERVER]\033[0m Faile connection to server [' + db.config.server + ']\n'); }
+    if (err) {
+        console.log('[\x1b[33mSQL SERVER\x1b[0m] \x1b[31mERROR\x1b[0m: Failed connection to server [' + db.config.server + ']\n');
+        return;
+    } else {
+        console.log('[\x1b[33mSQL SERVER\x1b[0m] \x1b[32mCONNECTION\x1b[0m: Open connection to server [' + db.config.server + ']\n');
+
+        let request = new Request("UPDATE [shieldren].[children] SET qrStatus = 0;", (err) => {
+            if (err) console.log("[\x1b[33mSQL SERVER\x1b[0m] \x1b[31mERROR\x1b[0m: Failed initilize children status");
+        });
+        connection.execSql(request);
+    }
     
-    let request = new Request("UPDATE [shieldren].[children] SET qrStatus = 0;", (err, value) => {
-        if (err) console.log("\033[0;31m[SQL ERROR]\033[0m Failed initilize children status");
-    });
-    connection.execSql(request);
-    return console.log('[\x1b[33mSQL SERVER\x1b[0m] \x1b[32mCONNECTION\x1b[0m: Open connection to server [' + db.config.server + ']\n');
 });
 connection.on('debug', function(text) {
     if (db.monitor) console.log('[\x1b[33mSQL SERVER\x1b[0m] \x1b[36mDEBUG\x1b[0m: ' + text);
@@ -38,7 +43,7 @@ module.exports = {
         if (!command)
             return callback(new Error('Missing Arguments'), null);
 
-        console.log('[\x1b[33mSQL SERVER\x1b[0m] Command: ' + command);
+        if (db.monitor) console.log('[\x1b[33mSQL SERVER\x1b[0m] \x1b[33mCommand\x1b[0m: ' + command);
 
         var result = [];
 

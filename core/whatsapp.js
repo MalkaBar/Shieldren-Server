@@ -31,13 +31,12 @@ class WhatsApp {
                     }
                 }); 
                 this.subproccess.stderr.on('data', (data) => { if (debugMode) errorMessage('Error: ' + data); });
-                this.subproccess.on('exit', (data) => { errorMessage('Close connection for ' + this.uniuqeID); });
+                this.subproccess.on('exit', () => { errorMessage('Close connection for ' + this.uniuqeID); });
             }
         });
     }
 
     dataReceived(json) {
-        console.log('[Whatsapp] Data = ' + json.toString());
         switch (json.code) {
             case -1:
                 this.subproccess.kill('SIGTERM');
@@ -55,7 +54,7 @@ class WhatsApp {
                 });                    
                 break;
             case 3:             //New message received
-            if (debugMode) debugMessage("Message been sent to classifier: " + JSON.stringify(data))
+            if (debugMode) debugMessage("Message been sent to classifier: " + JSON.stringify(json.data))
                 algoController.sentenceRecieved(json.data);
                 break;
             case 5:             //Child process start to run

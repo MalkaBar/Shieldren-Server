@@ -97,7 +97,7 @@ router.post('/login', function (req, res, next) {
             //Get Error while pulling data - SQL server ERROR
             if (err) {
                 console.log('\033[0;31m[SERVER]\033[0m LOGIN: ' + req.body.email + ' FAILED TO LOGIN [' + err + ']');
-                return returnJson(res, 400, err.message, null);;
+                return returnJson(res, 500, err.message, null);;
             }
 
             //Get wrong answer from SQL

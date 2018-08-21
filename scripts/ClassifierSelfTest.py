@@ -3,16 +3,16 @@
 import sys
 import threading
 import json
+import time
 
 print '{ "code": 3, "message": "Start load model.", "data": null }'
 sys.stdout.flush()
 
 
 class Classify (threading.Thread):
-    def __init__(self, model, sentence, id):
+    def __init__(self, sentence, id):
         threading.Thread.__init__(self)
         self.ID = id
-        self.model = model
         self.sentence = sentence
         self.classification = -1
 
@@ -37,6 +37,8 @@ class Classify (threading.Thread):
 
 
 threads = []
+
+time.sleep(10)
 print '{ "code": 1, "message": "End load model. Start waiting for sentences.", "data": null }'
 sys.stdout.flush()
 
@@ -47,10 +49,10 @@ while True:
     else:
         try:
             jsonData = json.loads(stringInput)
-            if (len(jsonData['sentence']) <= 0):
+            if (len(jsonData[jsonData.keys()[1]]) <= 0):
                 pass
             else:
-                thread = Classify(model, jsonData['sentence'], jsonData['id'])
+                thread = Classify(jsonData[jsonData.keys()[1]], jsonData[jsonData.keys()[0]])
                 thread.start()
                 threads.append(thread)
         except Exception as err:

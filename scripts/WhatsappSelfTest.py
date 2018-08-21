@@ -2,13 +2,13 @@ import json
 import time
 import sys
 
-def JsonPrint(code, session, message, jsonRecievedData=None):
+def JsonPrint(code, session, message, value=None):
     data = {}
     data["sessionID"] = str(session)
     data["code"] = code
     data["message"] = str(message)
-    if(jsonRecievedData):
-         data['data'] = jsonRecievedData
+    if(value):
+         data['data'] = value
     else:
          data['data'] = "null"
     json_string = json.dumps(data)
@@ -127,13 +127,13 @@ def Main():
     while True:
         paramTime = time.strftime("%Y-%m-%d %H:%M:%S")
         data = {
-            "caller": '972544665536',
-            "callee": '0524592005',
+            "caller": "972544665536",
+            "callee": "0524592005",
             "timestamp": paramTime,
-            "message": 'מה המצב? סמיילי מאוהב',
+            "message": "No Hebrew Translation",
             "group": True
         }
-        JsonPrint(2, 1234, "userMessage", data)
+        JsonPrint(3, 1234, "userMessage", data)
         time.sleep(gapBetweenJsons)
 
 Main()

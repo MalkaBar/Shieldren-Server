@@ -17,6 +17,7 @@ class Classifier {
 
     clasiffy(sentenceData) {
         let identifier = uniqid();
+        sentenceData.message = "מה לך ילדה? מה לך קטנה?";
         ClasiffierSentences[identifier] = sentenceData;
         this.subproccess.stdin.write('{"id": "' + identifier + '", "sentence": "' + sentenceData.message.toString() + '"}\n');
         if (debugMode) console.log('[\x1b[34mCLASSIFIER\x1b[0m] Sentence send to clasification: ' + sentenceData.message);
@@ -42,11 +43,20 @@ function processRecievedData(data)
                 switch (obj.data.classification)
                 {
                     case 1:
-                        notification.Notice("הורה יקר, נמצא כי ילדך חווה כעת בריונות רשת.", sentenceData.parentEmail);
-                        //notification.Notice('.הורה יקר, ילדך נמצא תחת איום',null, (err, recipient) => {
-                        //   if (err) console.log('[Notify] Failed to notification to client ' + recipient);
-                        //   else console.log('[Notify] Sent to client ' + recipient);
-                        //});
+                        db.run("INSERT INTO [shieldren].[messages] VALUES ('" + sentenceData.caller + "', '" + sentenceData.callee + "', '" + sentenceData.timestamp + "', '" + sentenceData.group + "', '" + sentenceData.message + "', '" + obj.data.classification + "');",
+                            (err) => { console.log("[\x1b[34mCLASSIFIER\x1b[0m] Error:" + err);                           }
+                        );
+                        /*
+                        notification.Notice("הורה יקר, נמצא כי ילדך חווה כעת בריונות רשת.", sentenceData.parentEmail)
+                            .then((data) => { console.log("[Urban] " + data); })
+                            .catch((err) => {console.log("[Urban] " + err); });
+                        /*/
+                        notification.Notice('.הורה יקר, ילדך נמצא תחת איום',null, (err, recipient) => {
+                           if (err) console.log('[Notify] Failed to notification to client ' + recipient);
+                           else console.log('[Notify] Sent to client ' + recipient);
+                        });
+                        //*/
+                        break;
                     case -1:
                         db.run("INSERT INTO [shieldren].[messages] VALUES ('" + sentenceData.caller + "', '" + sentenceData.callee + "', '" + sentenceData.timestamp + "', '" + sentenceData.group + "', '" + sentenceData.message + "', '" + obj.data.classification + "');",
                             (err) => { console.log("[\x1b[34mCLASSIFIER\x1b[0m] Error:" + err);                           }
@@ -63,7 +73,9 @@ function processRecievedData(data)
                 throw new Error(data);
         }
     }
-    catch(err) { console.log('[\x1b[34mCLASSIFIER\x1b[0m] Error: ' + err); }
+    catch(err) {
+        console.log('[\x1b[34mCLASSIFIER\x1b[0m] Error: ' + err);
+    }
 }
 
 module.exports = new Classifier();

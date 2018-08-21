@@ -9,11 +9,12 @@ class Notify {
             'masterSecret': Notification.masterSecret
         });
     }
-    Notice (notification, recipient = "all", callback = null) {
-        if (callbakc && typeof callback === 'function')
+    Notice (notification, recipient, callback = null) {
+        if (callback && typeof callback === 'function')
         {
             if (notification)
             {
+                if (!recipient) recipient = "all";
                 this.urbanAirshipPush.push.send({
                     'device_types': 'all',
                     'audience': recipient,
