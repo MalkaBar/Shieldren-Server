@@ -52,9 +52,12 @@ class WhatsApp {
                 break;
             case 2:             //Notify user about successful scan
                 algoController.qrBeenScanned(this.childInfo.childid, (err) => {
-                    if (err) { return this.socket.emit('qrError', 'Error while update DB.'); }
-                    this.socket.emit('qrScanned','QR been scanned. closing session.');
-                    this.socket.disconnect(true);
+                    if (err) {
+                         this.socket.emit('qrError', 'Error while update DB.');
+                    } else {
+                        this.socket.emit('qrScanned','QR been scanned. closing session.');
+                        this.socket.disconnect(true);
+                    }
                 });                    
                 break;
             case 3:             //New message received
@@ -62,11 +65,12 @@ class WhatsApp {
                 algoController.sentenceRecieved(json.data);
                 break;
             case 5:             //Child process start to run
-                normalMessage('Start Whatsapp session [' + json.seesionID + ']')
+                normalMessage('Start Whatsapp session [' + json.sessionID + ']')
                 this.uniuqeID = json.sessionID;
                 break;
             default:
                 if (debugMode) debugMessage('Default: ' + message);
+                break;
         }
     }
 };

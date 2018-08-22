@@ -10,7 +10,7 @@ module.exports = {
                 encrypt: false
             }
         },
-        monitor: false
+        monitor: (process.platform === 'win32') ? true : false
     },
     network: {
         port: (process.platform === 'win32') ? 3000 : 80

@@ -1,7 +1,7 @@
 var express    = require('express');
 var router     = express.Router();
 var controller = require('../controllers/statisticController');
-var jwt = require('jsonwebtoken');
+var jwt        = require('jsonwebtoken');
 
 router.use((req, res, next) => {
     try {

@@ -2,8 +2,8 @@ var { spawn }     = require('child_process');
 var { Algorithm } = require('../configuration');
 var debugMode     = require('../configuration').db.monitor;
 var db            = require('../core/db');
-var uniqid        = require('uniqid');
 var notification = require('./notification');
+var uniqid        = require('uniqid');
 
 var ClasiffierSentences = {}
 

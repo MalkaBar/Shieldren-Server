@@ -33,8 +33,5 @@ module.exports = {
         (err, result) => {
             return callback(err, result);
         });
-    },
-    delete: (email, callback) => {
-
     }
 };

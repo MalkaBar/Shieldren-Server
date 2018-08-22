@@ -4,7 +4,7 @@ var controller = require('../controllers/parentController');
 var validator  = require('validator');
 var jwt        = require('jsonwebtoken');
 var identifier = require('unique-string');
-var crypto      = require('crypto');
+var crypto     = require('crypto');
 
 router.use(function (req, res, next) {
     try {
