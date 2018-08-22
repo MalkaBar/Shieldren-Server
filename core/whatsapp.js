@@ -31,7 +31,7 @@ class WhatsApp {
                     }
                 }); 
                 this.subproccess.stderr.on('data', (data) => { if (debugMode) errorMessage('Error: ' + data); });
-                this.subproccess.on('exit', () => { errorMessage('Close connection for ' + this.uniuqeID); });
+                this.subproccess.on('exit', (data) => { errorMessage('Close connection for ' + this.uniuqeID + "[" + data + "]"); });
             }
         });
     }
