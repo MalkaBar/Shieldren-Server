@@ -40,6 +40,7 @@ class WhatsApp {
         switch (json.code) {
             case -1:
                 this.subproccess.kill('SIGTERM');
+                break;
             case 0:             //Whatsapp session been logout
                 algoController.qrBeenClosed(this.childInfo.childid, (err, data) => {
                     if (err) { errorMessage(err); }
@@ -64,7 +65,7 @@ class WhatsApp {
                 });                    
                 break;
             case 3:             //New message received
-            if (debugMode) debugMessage("Message been sent to classifier: " + JSON.stringify(json.data))
+                debugMessage("Message been sent to classifier: " + JSON.stringify(json.data))
                 algoController.sentenceRecieved(json.data);
                 break;
             case 5:             //Child process start to run
@@ -72,12 +73,12 @@ class WhatsApp {
                 this.uniuqeID = json.sessionID;
                 break;
             default:
-                if (debugMode) debugMessage('Default: ' + message);
+                debugMessage('Default: ' + message);
                 break;
         }
     }
 };
 
-function debugMessage(message)  { console.log("[\x1b[35mWHATSAPP\x1b[0m] \x1b[36mDEBUG\x1b[0m: " + message); }
+function debugMessage(message)  { if (debugMode) console.log("[\x1b[35mWHATSAPP\x1b[0m] \x1b[36mDEBUG\x1b[0m: " + message); }
 function errorMessage(message)  { console.log("[\x1b[35mWHATSAPP\x1b[0m] \x1b[36mERROR\x1b[0m: " + message); }
-function normalMessage(message) { console.log("[\x1b[35mWHATSAPP\x1b[0m] Message: "              + message); }
+function normalMessage(message) { if (debugMode) console.log("[\x1b[35mWHATSAPP\x1b[0m] Message: "              + message); }
