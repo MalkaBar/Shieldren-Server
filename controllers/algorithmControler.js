@@ -12,9 +12,7 @@ module.exports = {
     },
     qrBeenClosed: (cid) => {
         if (cid > 0)
-            db.run("UPDATE [shieldren].[children] SET qrStatus = 0 WHERE childid = " + cid + ";",
-                (err, result) => { cllaback(err, result); }
-            );
+            db.run("UPDATE [shieldren].[children] SET qrStatus = 0 WHERE childid = " + cid + ";", () => { });
     },
     pullChildData: (cid, callback) => {
         if (!cid) return callback(new Error('ERR_INVALID_INPUT'), null);
