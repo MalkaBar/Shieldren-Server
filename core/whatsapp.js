@@ -2,6 +2,7 @@ var { spawn }      = require('child_process');
 var algoController = require('../controllers/algorithmControler');
 var debugMode      = require('../configuration').db.monitor;
 var { Script }     = require('../configuration');
+var notification   = require('./notification');
 
 module.exports =
 class WhatsApp {
