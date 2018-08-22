@@ -32,7 +32,7 @@ router.get("/last/:id/:count", (req, res, next) => {
 router.get("/:id/:start/:end", (req, res, next) => {
     if (!req.params.start || !req.params.end) { return returnJson(res, 400, "Error","Invalid data received."); }
     if (!req.params.id || req.params.id < 1) { return returnJson(res, 400, "Error", "Invalid child number."); }
-    if (new Date(req.params.start) > new Date(req.params.end)) { return returnJson(res, 400, "Error", "Last date cant be smaller then start date."); }
+    if (new Date(req.params.start) > new Date(req.params.end)) { return returnJson(res, 400, "Error", "Last date cannot be smaller then start date."); }
     controller.verify(req.userID, req.params.id)
         .then((child) => {
             controller.get(child.phoneNumber, req.params.start, req.params.end)
