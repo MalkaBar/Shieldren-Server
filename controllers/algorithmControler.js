@@ -12,7 +12,7 @@ module.exports = {
     },
     qrBeenClosed: (cid, callback) => {
         if (cid > 0)
-            db.run("UPDATE [shieldren].[children] SET qrStatus = 0 WHERE childid = " + cid + ";", () => { callback(err, result); });
+            db.run("UPDATE [shieldren].[children] SET qrStatus = 0 WHERE childid = " + cid + ";", (err, result) => { callback(err, result); });
         else
             callback(new Error("INVAILD_CHILD_ID"));
         
