@@ -30,12 +30,12 @@ class WhatsApp {
                         }
                     }
                 }); 
-                this.subproccess.stderr.on('data', (data) => { if (debugMode) errorMessage('Error: ' + data); });
+                this.subproccess.stderr.on('data', (data) => { errorMessage('Error: ' + data); });
                 this.subproccess.on('exit', (data) => {
                     errorMessage('Close connection for ' + this.uniuqeID + "[" + data + "]");
                     algoController.qrBeenClosed(this.childInfo.childid, (err, data) => {
                         if (err) { errorMessage(err); }
-                        else debugMessage(data);
+                        else debugMessage("Exit Reason: " + data);
                     });
                     notification.Notice('.הורה יקר, ילדך התנתק מהמערכת, על כן ילדך אינו מוגן',null, (err, recipient) => {
                         if (err) console.log('[Notify] Failed to notification to client ' + recipient);
@@ -81,4 +81,4 @@ class WhatsApp {
 
 function debugMessage(message)  { if (debugMode) console.log("[\x1b[35mWHATSAPP\x1b[0m] \x1b[36mDEBUG\x1b[0m: " + message); }
 function errorMessage(message)  { console.log("[\x1b[35mWHATSAPP\x1b[0m] \x1b[36mERROR\x1b[0m: " + message); }
-function normalMessage(message) { if (debugMode) console.log("[\x1b[35mWHATSAPP\x1b[0m] Message: "              + message); }
+function normalMessage(message) { console.log("[\x1b[35mWHATSAPP\x1b[0m] " + message); }
