@@ -31,7 +31,17 @@ class WhatsApp {
                     }
                 }); 
                 this.subproccess.stderr.on('data', (data) => { if (debugMode) errorMessage('Error: ' + data); });
-                this.subproccess.on('exit', (data) => { errorMessage('Close connection for ' + this.uniuqeID + "[" + data + "]"); });
+                this.subproccess.on('exit', (data) => {
+                    errorMessage('Close connection for ' + this.uniuqeID + "[" + data + "]");
+                    algoController.qrBeenClosed(this.childInfo.childid, (err, data) => {
+                        if (err) { errorMessage(err); }
+                        else debugMessage(data);
+                    });
+                    notification.Notice('.הורה יקר, ילדך התנתק מהמערכת, על כן ילדך אינו מוגן',null, (err, recipient) => {
+                        if (err) console.log('[Notify] Failed to notification to client ' + recipient);
+                        else console.log('[Notify] Sent to client ' + recipient);
+                     });
+                });
             }
         });
     }
@@ -40,16 +50,6 @@ class WhatsApp {
         switch (json.code) {
             case -1:
                 this.subproccess.kill('SIGTERM');
-                break;
-            case 0:             //Whatsapp session been logout
-                algoController.qrBeenClosed(this.childInfo.childid, (err, data) => {
-                    if (err) { errorMessage(err); }
-                    else debugMessage(data);
-                });
-                notification.Notice('.הורה יקר, ילדך התנתק מהמערכת, על כן ילדך אינו מוגן',null, (err, recipient) => {
-                    if (err) console.log('[Notify] Failed to notification to client ' + recipient);
-                    else console.log('[Notify] Sent to client ' + recipient);
-                 });
                 break;
             case 1:             //Send QR to user
                 this.socket.emit('qrArrived', json.data);

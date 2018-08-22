@@ -17,7 +17,6 @@ class Classifier {
 
     clasiffy(sentenceData) {
         let identifier = uniqid();
-        sentenceData.message = "מה לך ילדה? מה לך קטנה?";
         ClasiffierSentences[identifier] = sentenceData;
         this.subproccess.stdin.write('{"id": "' + identifier + '", "sentence": "' + sentenceData.message.toString() + '"}\n');
         if (debugMode) console.log('[\x1b[34mCLASSIFIER\x1b[0m] Sentence send to clasification: ' + sentenceData.message);
