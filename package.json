@@ -27,7 +27,7 @@
     "socket.io": "^2.1.0",
     "tedious": "^2.6.2",
     "uniqid": "^4.1.1",
-    "validator": "^9.4.1"
+    "validator": "^13.7.0"
   },
   "devDependencies": {},
   "repository": {
